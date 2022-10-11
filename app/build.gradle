@@ -18,6 +18,15 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation":"$projectDir/schemas".toString(),
+                        "room.incremental":"true",
+                        "room.expandProjection":"true"]
+            }
+        }
     }
 
     Properties properties = new Properties()
@@ -87,7 +96,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
     // Datastore
+    implementation "androidx.datastore:datastore:1.0.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 
     // junit 5
     // (Required) Writing and executing Unit Tests on the JUnit Platform

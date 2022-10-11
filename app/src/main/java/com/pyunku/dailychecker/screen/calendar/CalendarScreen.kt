@@ -1,5 +1,6 @@
 package com.pyunku.dailychecker.screen
 
+import android.content.Context
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -8,17 +9,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import com.pyunku.dailychecker.R
 import com.pyunku.dailychecker.ui.theme.DailyCheckerTheme
 import io.github.boguszpawlowski.composecalendar.SelectableCalendar
@@ -26,6 +32,8 @@ import io.github.boguszpawlowski.composecalendar.day.DayState
 import io.github.boguszpawlowski.composecalendar.rememberSelectableCalendarState
 import io.github.boguszpawlowski.composecalendar.selection.DynamicSelectionState
 import io.github.boguszpawlowski.composecalendar.selection.SelectionMode
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 @Composable
 fun CalendarScreen() {
@@ -85,6 +93,40 @@ fun ExampleBox(
         }
     }
 }
+
+@Composable
+fun <T> rememberPreference(
+    key: Preferences.Key<T>,
+    defaultValue: T,
+): MutableState<T> {
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val state = remember {
+        context.dataStore.data
+            .map {
+                it[key] ?: defaultValue
+            }
+    }.collectAsState(initial = defaultValue)
+
+    return remember {
+        object : MutableState<T> {
+            override var value: T
+                get() = state.value
+                set(value) {
+                    coroutineScope.launch {
+                        context.dataStore.edit {
+                            it[key] = value
+                        }
+                    }
+                }
+
+            override fun component1() = value
+            override fun component2(): (T) -> Unit = { value = it }
+        }
+    }
+}
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "preferences")
 
 @Preview(showBackground = true)
 @Composable
