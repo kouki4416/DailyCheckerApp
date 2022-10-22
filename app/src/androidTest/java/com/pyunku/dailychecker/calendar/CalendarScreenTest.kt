@@ -1,7 +1,7 @@
 package com.pyunku.dailychecker.calendar
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import com.pyunku.dailychecker.MainActivity
+import com.pyunku.dailychecker.calendar.presentation.MainActivity
 import org.junit.Rule
 import org.junit.Test
 

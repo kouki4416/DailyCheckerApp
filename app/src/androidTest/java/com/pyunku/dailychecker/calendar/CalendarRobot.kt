@@ -4,7 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.pyunku.dailychecker.MainActivity
+import com.pyunku.dailychecker.calendar.presentation.MainActivity
 import com.pyunku.dailychecker.R
 
 fun launchCalendarScreen(
