@@ -1,5 +1,6 @@
 package com.pyunku.dailychecker.calendar.presentation
 
+import androidx.annotation.XmlRes
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -19,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pyunku.dailychecker.R
 import io.github.boguszpawlowski.composecalendar.SelectableCalendar
@@ -30,13 +32,13 @@ import java.time.LocalDate
 
 @Composable
 fun CalendarScreen(
-    state: State<CalendarScreenState>,
+    state: CalendarScreenState,
     onCheckDate: (date: LocalDate) -> Unit,
     onUncheckDate: (date: LocalDate) -> Unit,
 ) {
-    if(!state.value.isLoading){
+    if(!state.isLoading){
         val calendarState = rememberSelectableCalendarState(
-            initialSelection = state.value.checkedDates,
+            initialSelection = state.checkedDates,
             initialSelectionMode = SelectionMode.Multiple
         )
         // TODO add month header
@@ -119,5 +121,19 @@ fun ExampleBox(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun previewCalendar(){
+    CalendarScreen(
+        state = CalendarScreenState(
+            listOf(),
+            false,
+            null,
+        ),
+        onCheckDate = {},
+        onUncheckDate = {}
+    )
 }
 
