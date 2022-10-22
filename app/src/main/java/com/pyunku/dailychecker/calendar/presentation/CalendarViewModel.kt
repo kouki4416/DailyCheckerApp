@@ -53,6 +53,10 @@ class CalendarViewModel(
         }
     }
 
+    private fun getCheckedDateNum(){
+
+    }
+
     fun playClickSound(context: Context){
         val mp: MediaPlayer = MediaPlayer.create(context, R.raw.click_sound)
         mp.start()
