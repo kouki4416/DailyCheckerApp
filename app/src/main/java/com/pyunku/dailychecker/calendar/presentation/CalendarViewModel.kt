@@ -11,20 +11,22 @@ import com.pyunku.dailychecker.R
 import com.pyunku.dailychecker.calendar.data.local.CheckedDate
 import com.pyunku.dailychecker.calendar.data.CheckedDateRepository
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class CalendarViewModel(
     private val checkedDateRepository: CheckedDateRepository
 ) : ViewModel() {
-    private val _state = mutableStateOf(
+    private val _state = MutableStateFlow(
         CalendarScreenState(
             checkedDates = listOf(),
             isLoading = true
         )
     )
 
-    val state: State<CalendarScreenState>
+    val state: StateFlow<CalendarScreenState>
         get() = _state
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
@@ -37,21 +39,24 @@ class CalendarViewModel(
 
     private fun getCheckedDate() {
         viewModelScope.launch(errorHandler) {
-            val dates = getLocalCheckedDates()
-            _state.value = _state.value.copy(
-                checkedDates = dates,
-                isLoading = false
-            )
-        }
-    }
-
-    private suspend fun getLocalCheckedDates(): List<LocalDate> {
-        return withContext(Dispatchers.IO) {
-            checkedDateRepository.getCheckedDates().map { checkedDate ->
-                LocalDate.of(checkedDate.year, checkedDate.month, checkedDate.day)
+            checkedDateRepository.getCheckedDates().collect{
+                _state.value = _state.value.copy(
+                    checkedDates = it.map { checkedDate ->
+                        LocalDate.of(checkedDate.year, checkedDate.month, checkedDate.day)
+                    },
+                    isLoading = false
+                )
             }
         }
     }
+
+//    private suspend fun getLocalCheckedDates(): List<LocalDate> {
+//        return withContext(Dispatchers.IO) {
+//            checkedDateRepository.getCheckedDates().map { checkedDate ->
+//                LocalDate.of(checkedDate.year, checkedDate.month, checkedDate.day)
+//            }
+//        }
+//    }
 
     private fun getCheckedDateNum(){
 

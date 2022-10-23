@@ -95,7 +95,7 @@ dependencies {
     implementation "androidx.compose.material3:material3-window-size-class:1.0.0-beta03"
 
     // Coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
 
     // Datastore
     implementation "androidx.datastore:datastore:1.0.0"

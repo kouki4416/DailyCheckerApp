@@ -1,6 +1,7 @@
 package com.pyunku.dailychecker.calendar.data.local
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CheckedDateDao{
@@ -14,5 +15,5 @@ interface CheckedDateDao{
     suspend fun delete(date: CheckedDate)
 
     @Query("SELECT * FROM date")
-    suspend fun findAll(): List<CheckedDate>
+    fun findAll(): Flow<List<CheckedDate>>
 }

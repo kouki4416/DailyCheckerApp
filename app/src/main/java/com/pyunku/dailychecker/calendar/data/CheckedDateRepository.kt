@@ -2,10 +2,11 @@ package com.pyunku.dailychecker.calendar.data
 
 import com.pyunku.dailychecker.calendar.data.local.CheckedDate
 import com.pyunku.dailychecker.calendar.data.local.CheckedDateDao
+import kotlinx.coroutines.flow.Flow
 
 class CheckedDateRepository(private val checkedDateDao: CheckedDateDao) {
 
-    suspend fun getCheckedDates(): List<CheckedDate>{
+    fun getCheckedDates(): Flow<List<CheckedDate>>{
         return checkedDateDao.findAll()
     }
 

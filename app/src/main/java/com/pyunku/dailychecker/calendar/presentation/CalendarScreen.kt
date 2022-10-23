@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,13 +42,13 @@ import java.util.*
 
 @Composable
 fun CalendarScreen(
-    state: CalendarScreenState,
+    state: State<CalendarScreenState>,
     onCheckDate: (date: LocalDate) -> Unit,
     onUncheckDate: (date: LocalDate) -> Unit,
 ) {
-    if (!state.isLoading) {
+    if (!state.value.isLoading) {
         val calendarState = rememberSelectableCalendarState(
-            initialSelection = state.checkedDates,
+            initialSelection = state.value.checkedDates,
             initialSelectionMode = SelectionMode.Multiple
         )
         // TODO add month header
@@ -212,17 +213,17 @@ fun MonthHeader(
     }
 }
 
-@Preview
-@Composable
-fun previewCalendar() {
-    CalendarScreen(
-        state = CalendarScreenState(
-            listOf(),
-            0,
-            false,
-        ),
-        onCheckDate = {},
-        onUncheckDate = {}
-    )
-}
+//@Preview
+//@Composable
+//fun previewCalendar() {
+//    CalendarScreen(
+//        state = CalendarScreenState(
+//            listOf(),
+//            0,
+//            false,
+//        ),
+//        onCheckDate = {},
+//        onUncheckDate = {}
+//    )
+//}
 
