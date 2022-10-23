@@ -26,10 +26,10 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-            <meta-data
-                android:name="com.google.android.gms.ads.com.pyunku.dailychecker"
-                android:value="ca-app-pub-7719172067804321~1979146794"/>
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-7719172067804321~1979146794"/>
     </application>
 
 </manifest>

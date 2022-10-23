@@ -218,8 +218,8 @@ fun previewCalendar() {
     CalendarScreen(
         state = CalendarScreenState(
             listOf(),
+            0,
             false,
-            null,
         ),
         onCheckDate = {},
         onUncheckDate = {}
