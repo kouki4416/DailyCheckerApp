@@ -58,7 +58,7 @@ fun CalendarScreen(
                 .testTag(stringResource(id = R.string.calendar))
                 .animateContentSize(),
             dayContent = { dayState ->
-                if (dayState.date.month == LocalDate.now().month) {
+                if (dayState.date.year == LocalDate.now().year && dayState.date.month == LocalDate.now().month) {
                     DateBox(
                         RoundedCornerShape(2.dp),
                         dayState = dayState,
@@ -77,7 +77,10 @@ fun CalendarScreen(
                 MonthHeader(
                     monthState = monthState,
                     checkedDateNum = state.value.checkedDates
-                        .filter { it.month == monthState.currentMonth.month }.size
+                        .filter {
+                            it.month == monthState.currentMonth.month &&
+                                    it.year == monthState.currentMonth.year
+                        }.size
                 )
             }
         )
