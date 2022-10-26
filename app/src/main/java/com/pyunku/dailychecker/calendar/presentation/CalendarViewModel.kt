@@ -50,18 +50,6 @@ class CalendarViewModel(
         }
     }
 
-//    private suspend fun getLocalCheckedDates(): List<LocalDate> {
-//        return withContext(Dispatchers.IO) {
-//            checkedDateRepository.getCheckedDates().map { checkedDate ->
-//                LocalDate.of(checkedDate.year, checkedDate.month, checkedDate.day)
-//            }
-//        }
-//    }
-
-    private fun getCheckedDateNum(){
-
-    }
-
     fun playClickSound(context: Context){
         val mp: MediaPlayer = MediaPlayer.create(context, R.raw.click_sound)
         mp.start()

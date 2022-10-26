@@ -36,6 +36,7 @@ import io.github.boguszpawlowski.composecalendar.header.MonthState
 import io.github.boguszpawlowski.composecalendar.rememberSelectableCalendarState
 import io.github.boguszpawlowski.composecalendar.selection.DynamicSelectionState
 import io.github.boguszpawlowski.composecalendar.selection.SelectionMode
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
@@ -103,7 +104,12 @@ fun DateBox(
             modifier = Modifier
                 .size(70.dp)
                 .clip(shape)
-                .border(BorderStroke(1.dp, Color.LightGray))
+                .border(
+                    if (dayState.isCurrentDay) {
+                        BorderStroke(color = Color.Green, width = 2.dp)
+                    }
+                    else BorderStroke(1.dp, Color.LightGray)
+                )
                 .clickable {
                     // Can click previous date and current date
                     if (dayState.date.isBefore(LocalDate.now()) || dayState.isCurrentDay) {
@@ -121,6 +127,7 @@ fun DateBox(
             ) {
                 Text(
                     text = dayState.date.dayOfMonth.toString(),
+                    color = getDateNumColor(dayState)
                 )
                 if (dayState.selectionState.isDateSelected(dayState.date)) {
                     Image(
@@ -134,6 +141,8 @@ fun DateBox(
         }
     }
 }
+
+
 
 @Composable
 fun OtherMonthDateBox(
@@ -206,19 +215,18 @@ fun MonthHeader(
 fun CheckedCounter(
     monthState: MonthState,
     modifier: Modifier = Modifier,
-    size: Int
+    size: Int,
 ) {
     Row(
         modifier = Modifier.height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.Center,
     ) {
-        Row(modifier = Modifier.weight(0.25f)){
+        Row(modifier = Modifier.weight(0.25f)) {
             IconButton(
                 modifier = modifier
                     .testTag("Decrement")
                     .weight(0.25f)
-                    .fillMaxSize()
-                ,
+                    .fillMaxSize(),
                 onClick = { monthState.currentMonth = monthState.currentMonth.minusMonths(1) }
             ) {
                 Image(
@@ -230,16 +238,15 @@ fun CheckedCounter(
         }
         Row(
             modifier = Modifier
-            .weight(0.5f)
-            .fillMaxSize(),
+                .weight(0.5f)
+                .fillMaxSize(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 modifier = Modifier
                     .padding(8.dp)
-                    .fillMaxHeight()
-                ,
+                    .fillMaxHeight(),
                 painter = painterResource(id = R.drawable.ic_check_24),
                 contentDescription = "checked count",
             )
@@ -251,13 +258,12 @@ fun CheckedCounter(
             )
         }
         // Show next button only if the month on the screen is not current month
-        Row(modifier = Modifier.weight(0.25f)){
+        Row(modifier = Modifier.weight(0.25f)) {
             if (monthState.currentMonth != YearMonth.now()) {
                 IconButton(
                     modifier = Modifier
                         .testTag("Increment")
-                        .fillMaxSize()
-                    ,
+                        .fillMaxSize(),
                     onClick = { monthState.currentMonth = monthState.currentMonth.plusMonths(1) }
                 ) {
                     Image(
@@ -268,6 +274,14 @@ fun CheckedCounter(
                 }
             }
         }
+    }
+}
+
+private fun getDateNumColor(dayState: DayState<DynamicSelectionState>): Color {
+    return when (dayState.date.dayOfWeek) {
+        DayOfWeek.SATURDAY -> Color.Blue
+        DayOfWeek.SUNDAY -> Color.Red
+        else -> Color.Black
     }
 }
 
