@@ -2,7 +2,9 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
     id 'com.google.gms.google-services'
+    id 'com.google.android.gms.oss-licenses-plugin'
 }
 
 android {
@@ -11,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "com.pyunku.dailychecker"
-        minSdk 21
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0.0"
@@ -84,11 +86,11 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:$nav_version"
 
     // Koin main features for Android
-    implementation "io.insert-koin:koin-android:$koin_android_version"
-    implementation "io.insert-koin:koin-android-compat:$koin_android_version"
-    implementation "io.insert-koin:koin-androidx-workmanager:$koin_android_version"
-    implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
-    implementation "io.insert-koin:koin-androidx-compose:$koin_android_compose_version"
+//    implementation "io.insert-koin:koin-android:$koin_android_version"
+//    implementation "io.insert-koin:koin-android-compat:$koin_android_version"
+//    implementation "io.insert-koin:koin-androidx-workmanager:$koin_android_version"
+//    implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
+//    implementation "io.insert-koin:koin-androidx-compose:$koin_android_compose_version"
 
     // Material3
     implementation "androidx.compose.material3:material3:1.0.0-beta03"
@@ -112,6 +114,15 @@ dependencies {
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:31.0.1')
     implementation 'com.google.firebase:firebase-analytics'
+
+    // Hilt
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-android-compiler:2.44"
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+
+    // OSS Licenses
+    implementation "com.google.android.gms:play-services-oss-licenses:17.0.0"
 
     // junit 5
     // (Required) Writing and executing Unit Tests on the JUnit Platform

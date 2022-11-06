@@ -1,23 +1,25 @@
 package com.pyunku.dailychecker.calendar.presentation
 
-import android.content.Context
-import android.media.MediaPlayer
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pyunku.dailychecker.R
-import com.pyunku.dailychecker.calendar.data.local.CheckedDate
 import com.pyunku.dailychecker.calendar.data.CheckedDateRepository
-import kotlinx.coroutines.*
+import com.pyunku.dailychecker.calendar.data.local.CheckedDate
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
-class CalendarViewModel(
-    private val checkedDateRepository: CheckedDateRepository
+@HiltViewModel
+class CalendarViewModel @Inject constructor(
+    private val checkedDateRepository: CheckedDateRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(
         CalendarScreenState(
@@ -33,13 +35,14 @@ class CalendarViewModel(
         exception.printStackTrace()
     }
 
+
     init {
         getCheckedDate()
     }
 
     private fun getCheckedDate() {
         viewModelScope.launch(errorHandler) {
-            checkedDateRepository.getCheckedDates().collect{
+            checkedDateRepository.getCheckedDates().collect {
                 _state.value = _state.value.copy(
                     checkedDates = it.map { checkedDate ->
                         LocalDate.of(checkedDate.year, checkedDate.month, checkedDate.day)
@@ -50,10 +53,6 @@ class CalendarViewModel(
         }
     }
 
-    fun playClickSound(context: Context){
-        val mp: MediaPlayer = MediaPlayer.create(context, R.raw.click_sound)
-        mp.start()
-    }
 
     fun deleteCheckedDate(date: LocalDate) {
         val checkedDate = CheckedDate(

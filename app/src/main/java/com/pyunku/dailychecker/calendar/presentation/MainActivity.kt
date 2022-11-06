@@ -1,5 +1,7 @@
 package com.pyunku.dailychecker.calendar.presentation
 
+import android.content.Context
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,15 +13,21 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.pyunku.dailychecker.R
+import com.pyunku.dailychecker.navigation.SetupNavGraph
 import com.pyunku.dailychecker.ui.theme.DailyCheckerTheme
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalMaterial3Api
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val calendarViewModel: CalendarViewModel by viewModel()
+    private lateinit var navController: NavHostController
     //var interstitialAd: InterstitialAd? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,39 +49,27 @@ class MainActivity : ComponentActivity() {
 
             DailyCheckerTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Scaffold(
-                        bottomBar = {
-                            AndroidView(factory = {
-                                AdView(it).apply{
-                                    setAdSize(AdSize.BANNER)
-                                    //adUnitId = "ca-app-pub-7719172067804321/1743343072"
-                                    //Test
-                                    adUnitId = "ca-app-pub-3940256099942544/6300978111"
-                                    loadAd(AdRequest.Builder().build())
-                                }
-                            })
-                        }, content = {
-                            CalendarScreen(
-                                calendarViewModel.state.collectAsState(),
-                                onCheckDate = { date ->
-                                    calendarViewModel.addCheckedDate(date)
-                                    calendarViewModel.playClickSound(this)
-                                },
-                                onUncheckDate = { date ->
-                                    calendarViewModel.deleteCheckedDate(date)
-                                }
-                            )
-                        }
-                    )
-                }
+                navController = rememberNavController()
+                SetupNavGraph(navController = navController)
             }
         }
+        // TODO insert admob to bottombar
+//        AndroidView(factory = {
+//            AdView(it).apply{
+//                setAdSize(AdSize.BANNER)
+//                //adUnitId = "ca-app-pub-7719172067804321/1743343072"
+//                //Test
+//                adUnitId = "ca-app-pub-3940256099942544/6300978111"
+//                loadAd(AdRequest.Builder().build())
+//            }
+//        })
 
         // AdMob
         MobileAds.initialize(this)
+    }
+
+    private fun playClickSound(context: Context){
+        val mp: MediaPlayer = MediaPlayer.create(context, R.raw.click_sound)
+        mp.start()
     }
 }

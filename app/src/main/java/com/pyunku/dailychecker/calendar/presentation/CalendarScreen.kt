@@ -15,8 +15,8 @@ import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,9 +26,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pyunku.dailychecker.R
 import io.github.boguszpawlowski.composecalendar.SelectableCalendar
 import io.github.boguszpawlowski.composecalendar.day.DayState
@@ -43,14 +43,31 @@ import java.time.format.TextStyle
 import java.util.*
 
 @Composable
+fun CalendarRoute(
+    modifier: Modifier = Modifier,
+    viewModel: CalendarViewModel = hiltViewModel(),
+) {
+    val state by viewModel.state.collectAsState()
+    CalendarScreen(
+        state = state,
+        onCheckDate = { date ->
+            viewModel.addCheckedDate(date)
+        },
+        onUncheckDate = { date ->
+            viewModel.deleteCheckedDate(date)
+        }
+    )
+}
+
+@Composable
 fun CalendarScreen(
-    state: State<CalendarScreenState>,
+    state: CalendarScreenState,
     onCheckDate: (date: LocalDate) -> Unit,
     onUncheckDate: (date: LocalDate) -> Unit,
 ) {
-    if (!state.value.isLoading) {
+    if (!state.isLoading) {
         val calendarState = rememberSelectableCalendarState(
-            initialSelection = state.value.checkedDates,
+            initialSelection = state.checkedDates,
             initialSelectionMode = SelectionMode.Multiple
         )
         SelectableCalendar(
@@ -76,7 +93,7 @@ fun CalendarScreen(
             monthHeader = { monthState ->
                 MonthHeader(
                     monthState = monthState,
-                    checkedDateNum = state.value.checkedDates
+                    checkedDateNum = state.checkedDates
                         .filter {
                             it.month == monthState.currentMonth.month &&
                                     it.year == monthState.currentMonth.year
@@ -110,8 +127,7 @@ fun DateBox(
                 .border(
                     if (dayState.isCurrentDay) {
                         BorderStroke(color = Color.Green, width = 2.dp)
-                    }
-                    else BorderStroke(1.dp, Color.LightGray)
+                    } else BorderStroke(1.dp, Color.LightGray)
                 )
                 .clickable {
                     // Can click previous date and current date
@@ -144,7 +160,6 @@ fun DateBox(
         }
     }
 }
-
 
 
 @Composable
@@ -288,19 +303,18 @@ private fun getDateNumColor(dayState: DayState<DynamicSelectionState>): Color {
     }
 }
 
-@Preview
-@Composable
-fun previewCalendar() {
-    CalendarScreen(
-        state = mutableStateOf(
-            CalendarScreenState(
-                listOf(),
-                0,
-                false,
-            )
-        ),
-        onCheckDate = {},
-        onUncheckDate = {}
-    )
-}
+//@Preview
+//@Composable
+//fun previewCalendar() {
+//    CalendarScreen(
+//        state = mutableStateOf(
+//            CalendarScreenState(
+//                listOf(),
+//                0,
+//                false,
+//            )
+//        ),
+//        onCheckDate = {}
+//    ) {}
+//}
 

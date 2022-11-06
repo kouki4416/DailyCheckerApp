@@ -1,27 +1,33 @@
-package com.pyunku.dailychecker.app
+package com.pyunku.dailychecker.calendar.di
 
+import android.content.Context
 import androidx.room.Room
 import com.pyunku.dailychecker.calendar.data.local.AppDatabase
-import com.pyunku.dailychecker.calendar.data.CheckedDateRepository
-import com.pyunku.dailychecker.calendar.presentation.CalendarViewModel
-import org.koin.android.ext.koin.androidApplication
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.dsl.module
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-val applicationModule = module {
-    single {
-        Room.databaseBuilder(
-            androidApplication(),
+@Module
+@InstallIn(SingletonComponent::class)
+object ApplicationModule{
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ): AppDatabase{
+        return Room.databaseBuilder(
+            context,
             AppDatabase::class.java,
             "app.db"
         ).build()
     }
 
-    // Create Dao
-    factory { get<AppDatabase>().checkedDateDao() }
-    viewModel {
-        CalendarViewModel(get())
-    }
-    single { CheckedDateRepository(get()) }
+    @Provides
+    @Singleton
+    fun provideDao(db: AppDatabase) = db.checkedDateDao()
 }
+
 
