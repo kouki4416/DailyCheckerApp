@@ -82,7 +82,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     //implementation "io.insert-koin:koin-android:$koinVersion"
-    implementation 'androidx.activity:activity-compose:1.6.0'
+    implementation 'androidx.activity:activity-compose:1.6.1'
     implementation "androidx.navigation:navigation-compose:$nav_version"
 
     // Koin main features for Android
@@ -93,8 +93,9 @@ dependencies {
 //    implementation "io.insert-koin:koin-androidx-compose:$koin_android_compose_version"
 
     // Material3
-    implementation "androidx.compose.material3:material3:1.0.0-beta03"
-    implementation "androidx.compose.material3:material3-window-size-class:1.0.0-beta03"
+    implementation "androidx.compose.material3:material3:1.1.0-alpha01"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.compose.material3:material3-window-size-class:1.1.0-alpha01"
 
     // Coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
@@ -122,7 +123,10 @@ dependencies {
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     // OSS Licenses
-    implementation "com.google.android.gms:play-services-oss-licenses:17.0.0"
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+
+    // Setting Compose
+    implementation 'com.github.alorma:compose-settings-ui-m3:0.13.0'
 
     // junit 5
     // (Required) Writing and executing Unit Tests on the JUnit Platform
