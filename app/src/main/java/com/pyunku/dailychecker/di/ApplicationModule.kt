@@ -1,6 +1,9 @@
-package com.pyunku.dailychecker.calendar.di
+package com.pyunku.dailychecker.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.pyunku.dailychecker.calendar.data.local.AppDatabase
 import dagger.Module
@@ -28,6 +31,16 @@ object ApplicationModule{
     @Provides
     @Singleton
     fun provideDao(db: AppDatabase) = db.checkedDateDao()
+
+    @Singleton
+    @Provides
+    fun providePreferencesDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<Preferences> = androidx.datastore.preferences.core.PreferenceDataStoreFactory.create(
+        produceFile = {
+            context.preferencesDataStoreFile("settings")
+        }
+    )
 }
 
 

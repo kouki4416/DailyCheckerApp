@@ -1,11 +1,10 @@
 package com.pyunku.dailychecker.calendar.presentation
 
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pyunku.dailychecker.calendar.data.CheckedDateRepository
 import com.pyunku.dailychecker.calendar.data.local.CheckedDate
+import com.pyunku.dailychecker.data.UserPreferencesDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val checkedDateRepository: CheckedDateRepository,
+    private val userPreferencesRepository: UserPreferencesDataSource,
 ) : ViewModel() {
     private val _state = MutableStateFlow(
         CalendarScreenState(

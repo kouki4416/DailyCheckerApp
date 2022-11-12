@@ -2,4 +2,5 @@
     <string name="app_name">DailyChecker</string>
     <string name="calendar">Calendar</string>
     <string name="CheckedDate">checkedDate</string>
+    <string name="License">License</string>
 </resources>
