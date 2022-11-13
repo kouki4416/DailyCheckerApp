@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
@@ -140,9 +141,7 @@ fun DateBox(
             .size(70.dp)
             .clip(shape)
             .border(
-                if (dayState.isCurrentDay) {
-                    BorderStroke(color = Color.Green, width = 2.dp)
-                } else BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground)
+                BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground)
             )
         clickableModifier =
             if (dayState.date.isBefore(LocalDate.now()) || dayState.isCurrentDay) {
@@ -161,26 +160,34 @@ fun DateBox(
             }
 
         Box(
-            modifier = Modifier
-                .size(70.dp)
-                .clip(shape)
-                .border(
-                    if (dayState.isCurrentDay) {
-                        BorderStroke(color = Color.Green, width = 2.dp)
-                    } else BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground)
-                )
-                .then(clickableModifier)
+            modifier = Modifier.then(clickableModifier)
         ) {
             Column(
-                modifier = Modifier
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                val primary = MaterialTheme.colorScheme.primary
                 Text(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .drawBehind {
+                            if (dayState.isCurrentDay) {
+                                drawCircle(
+                                    color = primary,
+                                    radius = this.size.maxDimension / 2
+                                )
+                            }
+                        },
                     text = dayState.date.dayOfMonth.toString(),
-                    color = when (dayState.date.dayOfWeek) {
-                        DayOfWeek.SATURDAY -> Color.Blue
-                        DayOfWeek.SUNDAY -> Color.Red
-                        else -> MaterialTheme.colorScheme.onBackground
-                    }
+                    color = if (dayState.isCurrentDay) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        when (dayState.date.dayOfWeek) {
+                            DayOfWeek.SATURDAY -> Color.Blue
+                            DayOfWeek.SUNDAY -> Color.Red
+                            else -> MaterialTheme.colorScheme.onBackground
+                        }
+                    },
                 )
                 if (dayState.selectionState.isDateSelected(dayState.date)) {
                     Image(
@@ -233,7 +240,8 @@ fun OtherMonthDateBox(
                 .disableClickAndRipple()
         ) {
             Column(
-                modifier = Modifier
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = dayState.date.dayOfMonth.toString(),
@@ -257,7 +265,7 @@ fun MonthHeader(
     monthState: MonthState,
     modifier: Modifier = Modifier,
     checkedDateNum: Int,
-    checkShape: CheckShape
+    checkShape: CheckShape,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -284,7 +292,10 @@ fun MonthHeader(
             )
         }
 
-        CheckedCounter(monthState = monthState, modifier = modifier, size = checkedDateNum, checkShape = checkShape)
+        CheckedCounter(monthState = monthState,
+            modifier = modifier,
+            size = checkedDateNum,
+            checkShape = checkShape)
     }
 }
 
@@ -293,7 +304,7 @@ fun CheckedCounter(
     monthState: MonthState,
     modifier: Modifier = Modifier,
     size: Int,
-    checkShape: CheckShape
+    checkShape: CheckShape,
 ) {
     Row(
         modifier = Modifier.height(IntrinsicSize.Min),

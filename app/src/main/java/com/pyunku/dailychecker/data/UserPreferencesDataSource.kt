@@ -13,7 +13,6 @@ import java.io.IOException
 import javax.inject.Inject
 
 enum class CheckShape(val resId: Int) {
-    NONE(R.drawable.ic_circle),
     CIRCLE(R.drawable.ic_circle),
     CHECK(R.drawable.ic_check_24);
 }
@@ -50,7 +49,7 @@ class UserPreferencesDataSource @Inject constructor(
 
     private fun mapUserPreferences(preferences: Preferences): UserPreferences {
         val checkShape = CheckShape.valueOf(
-            preferences[PreferencesKeys.CHECK_SHAPE] ?: CheckShape.NONE.name
+            preferences[PreferencesKeys.CHECK_SHAPE] ?: CheckShape.CIRCLE.name
         )
         return UserPreferences(checkShape = checkShape)
     }

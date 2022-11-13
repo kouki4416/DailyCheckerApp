@@ -38,7 +38,7 @@ class CalendarViewModel @Inject constructor(
         userPreferencesRepository.userPreferencesFlow.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UserPreferences(CheckShape.NONE)
+            initialValue = UserPreferences(CheckShape.CIRCLE)
         )
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->

@@ -3,4 +3,6 @@
     <string name="calendar">Calendar</string>
     <string name="CheckedDate">checkedDate</string>
     <string name="License">License</string>
+    <string name="setting_select_check_shape">チェックに使用するマークを選択</string>
+    <string name="setting_check_shape">チェックマーク</string>
 </resources>

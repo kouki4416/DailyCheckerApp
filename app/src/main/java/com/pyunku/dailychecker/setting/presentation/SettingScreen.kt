@@ -1,6 +1,7 @@
 package com.pyunku.dailychecker.setting
 
 import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -9,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -29,10 +31,12 @@ fun SettingRoute(
     viewModel: SettingViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val userPreferences by viewModel.userPreferencesState.collectAsState()
+
     Column() {
         SettingList(
-            title = { Text(text = "List") },
-            subtitle = { Text(text = "Select a check shape") },
+            title = { Text(text = stringResource(R.string.setting_check_shape)) },
+            subtitle = { Text(text = stringResource(R.string.setting_select_check_shape)) },
             items = CheckShape.values().map { it.name },
             onSelectedAction = { selectedIndex ->
                 viewModel.setCheckShape(
@@ -40,6 +44,9 @@ fun SettingRoute(
                         it.ordinal == selectedIndex
                     }
                 )
+            },
+            icon = {
+                Image(painter = painterResource(id = userPreferences.checkShape.resId), contentDescription = "check shape")
             }
         )
         Divider()
@@ -50,6 +57,7 @@ fun SettingRoute(
                     OssLicensesMenuActivity::class.java))
             },
         )
+        Divider()
     }
 }
 
