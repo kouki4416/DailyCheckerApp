@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -17,8 +18,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -127,18 +130,19 @@ fun DateBox(
         .wrapContentSize(Alignment.Center)
         .padding(3.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .size(70.dp)
-                .clip(shape)
-                .border(
-                    if (dayState.isCurrentDay) {
-                        BorderStroke(color = Color.Green, width = 2.dp)
-                    } else BorderStroke(1.dp, Color.LightGray)
-                )
-                .clickable {
-                    // Can click previous date and current date
-                    if (dayState.date.isBefore(LocalDate.now()) || dayState.isCurrentDay) {
+        // Define clickable modifier depending on date
+        var clickableModifier = Modifier
+            .size(70.dp)
+            .clip(shape)
+            .border(
+                if (dayState.isCurrentDay) {
+                    BorderStroke(color = Color.Green, width = 2.dp)
+                } else BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
+            )
+        clickableModifier =
+            if (dayState.date.isBefore(LocalDate.now()) || dayState.isCurrentDay) {
+                clickableModifier.then(
+                    Modifier.clickable {
                         dayState.selectionState.onDateSelected(dayState.date)
                         if (dayState.selectionState.isDateSelected(dayState.date)) {
                             onCheckDate(dayState.date)
@@ -146,21 +150,40 @@ fun DateBox(
                             onUncheckDate(dayState.date)
                         }
                     }
-                }
+                )
+            } else {
+                clickableModifier.then(Modifier.disableClickAndRipple())
+            }
+
+        Box(
+            modifier = Modifier
+                .size(70.dp)
+                .clip(shape)
+                .border(
+                    if (dayState.isCurrentDay) {
+                        BorderStroke(color = Color.Green, width = 2.dp)
+                    } else BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
+                )
+                .then(clickableModifier)
         ) {
             Column(
                 modifier = Modifier
             ) {
                 Text(
                     text = dayState.date.dayOfMonth.toString(),
-                    color = getDateNumColor(dayState)
+                    color = when (dayState.date.dayOfWeek) {
+                        DayOfWeek.SATURDAY -> Color.Blue
+                        DayOfWeek.SUNDAY -> Color.Red
+                        else -> MaterialTheme.colorScheme.onBackground
+                    }
                 )
                 if (dayState.selectionState.isDateSelected(dayState.date)) {
                     Image(
                         modifier = Modifier
                             .fillMaxSize(),
                         painter = painterResource(id = checkShape.resId),
-                        contentDescription = stringResource(R.string.CheckedDate)
+                        contentDescription = stringResource(R.string.CheckedDate),
+                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
                     )
                 }
             }
@@ -184,13 +207,14 @@ fun OtherMonthDateBox(
                 .size(70.dp)
                 .clip(shape)
                 .border(BorderStroke(1.dp, Color.LightGray))
+                .disableClickAndRipple()
         ) {
             Column(
                 modifier = Modifier
             ) {
                 Text(
                     text = dayState.date.dayOfMonth.toString(),
-                    color = Color.LightGray
+                    color = MaterialTheme.colorScheme.outline
                 )
                 if (dayState.selectionState.isDateSelected(dayState.date)) {
                     Image(
@@ -302,12 +326,14 @@ fun CheckedCounter(
     }
 }
 
-private fun getDateNumColor(dayState: DayState<DynamicSelectionState>): Color {
-    return when (dayState.date.dayOfWeek) {
-        DayOfWeek.SATURDAY -> Color.Blue
-        DayOfWeek.SUNDAY -> Color.Red
-        else -> Color.Black
-    }
+// Disable clickable
+inline fun Modifier.disableClickAndRipple(): Modifier = composed {
+    clickable(
+        enabled = false,
+        indication = null,
+        interactionSource = remember { MutableInteractionSource() },
+        onClick = { },
+    )
 }
 
 //@Preview

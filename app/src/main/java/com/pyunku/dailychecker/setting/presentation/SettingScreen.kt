@@ -4,8 +4,6 @@ import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +19,7 @@ import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.pyunku.dailychecker.R
 import com.pyunku.dailychecker.data.CheckShape
+import com.pyunku.dailychecker.setting.presentation.SettingMenuLink
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -31,52 +30,10 @@ fun SettingRoute(
 ) {
     val context = LocalContext.current
     Column() {
-        SettingsMenuLink(
-            title = { Text(text = stringResource(R.string.License)) },
-            onClick = {
-                context.startActivity(Intent(context,
-                    OssLicensesMenuActivity::class.java))
-            },
-        )
-        Divider()
-//        SettingsSwitch(
-//            icon = { Icon(imageVector = Icons.Default.Wifi, contentDescription = "Wifi") },
-//            title = { Text(text = "Switch") },
-//            subtitle = { Text(text = "This is a longer text") },
-//            onCheckedChange = { },
-//        )
-//        Divider()
-//        SettingsCheckbox(
-//            icon = { Icon(imageVector = Icons.Default.Wifi, contentDescription = "Wifi") },
-//            title = { Text(text = "Checkbox") },
-//            subtitle = { Text(text = "This is a longer text") },
-//            onCheckedChange = { },
-//        )
-//        Divider()
-//        SettingsSlider(
-//            icon = {
-//                Icon(
-//                    imageVector = Icons.Default.BrightnessMedium,
-//                    contentDescription = "Brightness Medium"
-//                )
-//            },
-//            title = { Text(text = "Slider") },
-//        )
-//        Divider()
         SettingList(
             title = { Text(text = "List") },
             subtitle = { Text(text = "Select a check shape") },
             items = CheckShape.values().map { it.name },
-            action = {
-                IconButton(onClick = {
-
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "Clear",
-                    )
-                }
-            },
             onSelectedAction = { selectedIndex ->
                 viewModel.setCheckShape(
                     CheckShape.values().first {
@@ -84,6 +41,14 @@ fun SettingRoute(
                     }
                 )
             }
+        )
+        Divider()
+        SettingsMenuLink(
+            title = { Text(text = stringResource(R.string.License)) },
+            onClick = {
+                context.startActivity(Intent(context,
+                    OssLicensesMenuActivity::class.java))
+            },
         )
     }
 }
@@ -114,7 +79,7 @@ fun SettingList(
         subtitle
     }
 
-    SettingsMenuLink(
+    SettingMenuLink(
         modifier = modifier,
         icon = icon,
         title = title,
@@ -179,4 +144,3 @@ fun SettingList(
         dismissButton = {},
     )
 }
-
