@@ -5,10 +5,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,7 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingRoute(
     modifier: Modifier = Modifier,
-    viewModel: SettingViewModel = hiltViewModel()
+    viewModel: SettingViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val userPreferences by viewModel.userPreferencesState.collectAsState()
@@ -46,7 +50,11 @@ fun SettingRoute(
                 )
             },
             icon = {
-                Image(painter = painterResource(id = userPreferences.checkShape.resId), contentDescription = "check shape")
+                Image(
+                    painter = painterResource(id = userPreferences.checkShape.resId),
+                    contentDescription = ("check shape"),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                )
             }
         )
         Divider()
@@ -72,7 +80,7 @@ fun SettingList(
     subtitle: (@Composable () -> Unit)? = null,
     closeDialogDelay: Long = 200,
     action: (@Composable () -> Unit)? = null,
-    onSelectedAction: ((Int) -> Unit)
+    onSelectedAction: ((Int) -> Unit),
 ) {
 
     if (state.value >= items.size) {
@@ -134,9 +142,11 @@ fun SettingList(
                             ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        RadioButton(
-                            selected = isSelected,
-                            onClick = null
+                        Image(
+                            modifier = Modifier.padding(start = 16.dp),
+                            painter = painterResource(id = CheckShape.valueOf(item).resId),
+                            contentDescription = ("check shape"),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                         )
                         Text(
                             text = item,

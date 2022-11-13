@@ -32,7 +32,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pyunku.dailychecker.R
 import com.pyunku.dailychecker.data.CheckShape
@@ -87,7 +86,8 @@ fun CalendarScreen(
             dayContent = { dayState ->
                 if (dayState.date.year == LocalDate.now().year
                     && dayState.date.month == LocalDate.now().month
-                    && dayState.date.dayOfMonth <= LocalDate.now().dayOfMonth) {
+                    && dayState.date.dayOfMonth <= LocalDate.now().dayOfMonth
+                ) {
                     DateBox(
                         RoundedCornerShape(2.dp),
                         dayState = dayState,
@@ -197,7 +197,7 @@ fun DateBox(
                             .fillMaxSize(),
                         painter = painterResource(id = checkShape.resId),
                         contentDescription = stringResource(R.string.CheckedDate),
-                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
+                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
                     )
                 }
             }
@@ -283,13 +283,13 @@ fun MonthHeader(
                     .getDisplayName(TextStyle.FULL, Locale.getDefault())
                     .lowercase()
                     .replaceFirstChar { it.titlecase() },
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = monthState.currentMonth.year.toString(),
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
@@ -311,6 +311,7 @@ fun CheckedCounter(
     Row(
         modifier = Modifier.height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(modifier = Modifier.weight(0.25f)) {
             IconButton(
@@ -340,13 +341,11 @@ fun CheckedCounter(
                     .fillMaxHeight(),
                 painter = painterResource(id = checkShape.resId),
                 contentDescription = "checked count",
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
             )
-            //Text(text = "5 / ", modifier = Modifier.fillMaxSize(), fontSize = Typography.)
-            val checkedRatio = size.toString() + "f"
             Text(
                 text = "$size/${monthState.currentMonth.lengthOfMonth()}",
-                fontSize = 24.sp
+                fontSize = MaterialTheme.typography.headlineSmall.fontSize
             )
         }
         // Show next button only if the month on the screen is not current month

@@ -3,10 +3,12 @@ package com.pyunku.dailychecker
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.viewinterop.AndroidView
@@ -83,7 +85,9 @@ fun RowScope.AddItem(
 
 @Composable
 fun AdMobBar() {
-    AndroidView(factory = {
+    AndroidView(
+        modifier = Modifier.fillMaxWidth(),
+        factory = {
         AdView(it).apply {
             setAdSize(AdSize.BANNER)
             //adUnitId = "ca-app-pub-7719172067804321/1743343072"
