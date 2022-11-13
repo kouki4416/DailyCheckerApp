@@ -7,12 +7,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -219,17 +219,17 @@ fun MonthHeader(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
         ) {
-            androidx.compose.material.Text(
+            Text(
                 modifier = Modifier.testTag("MonthLabel"),
                 text = monthState.currentMonth.month
                     .getDisplayName(TextStyle.FULL, Locale.getDefault())
                     .lowercase()
                     .replaceFirstChar { it.titlecase() },
-                style = MaterialTheme.typography.h4,
+                style = MaterialTheme.typography.bodyLarge
             )
             Spacer(modifier = Modifier.width(8.dp))
-            androidx.compose.material.Text(text = monthState.currentMonth.year.toString(),
-                style = MaterialTheme.typography.h4)
+            Text(text = monthState.currentMonth.year.toString(),
+                style = MaterialTheme.typography.bodyLarge)
         }
 
         CheckedCounter(monthState = monthState, modifier = modifier, size = checkedDateNum)
@@ -256,7 +256,7 @@ fun CheckedCounter(
             ) {
                 Image(
                     imageVector = Icons.Default.KeyboardArrowLeft,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                     contentDescription = "Previous",
                 )
             }
@@ -293,7 +293,7 @@ fun CheckedCounter(
                 ) {
                     Image(
                         imageVector = Icons.Default.KeyboardArrowRight,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                         contentDescription = "Next",
                     )
                 }

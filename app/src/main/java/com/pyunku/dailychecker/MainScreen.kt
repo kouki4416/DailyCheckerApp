@@ -3,8 +3,7 @@ package com.pyunku.dailychecker
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
@@ -17,7 +16,8 @@ import androidx.navigation.compose.rememberNavController
 import com.pyunku.dailychecker.navigation.Screen
 import com.pyunku.dailychecker.navigation.SetupNavGraph
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
@@ -34,7 +34,7 @@ fun BottomBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    BottomNavigation {
+     NavigationBar {
         screens.forEach { screen ->
             AddItem(screen = screen,
                 currentDestination = currentDestination,
@@ -52,7 +52,7 @@ fun RowScope.AddItem(
     val selected = currentDestination?.hierarchy?.any {
         it.route == screen.route
     } == true
-    BottomNavigationItem(
+    NavigationBarItem(
         selected = selected,
         icon = {
             Icon(
@@ -67,6 +67,6 @@ fun RowScope.AddItem(
         onClick = {
             navController.navigate(screen.route)
         },
-        unselectedContentColor = LocalContentColor.current.copy(alpha = 0f)
+        //unselectedContentColor = LocalContentColor.current.copy(alpha = 0f)
     )
 }
