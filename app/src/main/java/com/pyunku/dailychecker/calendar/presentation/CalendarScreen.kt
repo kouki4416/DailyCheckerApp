@@ -85,7 +85,9 @@ fun CalendarScreen(
                 .testTag(stringResource(id = R.string.calendar))
                 .animateContentSize(),
             dayContent = { dayState ->
-                if (dayState.date.year == LocalDate.now().year && dayState.date.month == LocalDate.now().month) {
+                if (dayState.date.year == LocalDate.now().year
+                    && dayState.date.month == LocalDate.now().month
+                    && dayState.date.dayOfMonth <= LocalDate.now().dayOfMonth) {
                     DateBox(
                         RoundedCornerShape(2.dp),
                         dayState = dayState,
@@ -94,7 +96,7 @@ fun CalendarScreen(
                         userPreferences.checkShape
                     )
                 } else {
-                    OtherMonthDateBox(
+                    UnselectableDateBox(
                         shape = RoundedCornerShape(2.dp),
                         dayState = dayState
                     )
@@ -223,7 +225,7 @@ fun WeekHeader(
 }
 
 @Composable
-fun OtherMonthDateBox(
+fun UnselectableDateBox(
     shape: Shape,
     dayState: DayState<DynamicSelectionState>,
 ) {
