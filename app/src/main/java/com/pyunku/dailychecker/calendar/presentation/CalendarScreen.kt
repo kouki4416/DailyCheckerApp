@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -106,8 +107,12 @@ fun CalendarScreen(
                         .filter {
                             it.month == monthState.currentMonth.month &&
                                     it.year == monthState.currentMonth.year
-                        }.size
+                        }.size,
+                    checkShape = userPreferences.checkShape
                 )
+            },
+            weekHeader = { list ->
+                WeekHeader(daysOfWeek = list)
             }
         )
     } else {
@@ -137,7 +142,7 @@ fun DateBox(
             .border(
                 if (dayState.isCurrentDay) {
                     BorderStroke(color = Color.Green, width = 2.dp)
-                } else BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
+                } else BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground)
             )
         clickableModifier =
             if (dayState.date.isBefore(LocalDate.now()) || dayState.isCurrentDay) {
@@ -162,7 +167,7 @@ fun DateBox(
                 .border(
                     if (dayState.isCurrentDay) {
                         BorderStroke(color = Color.Green, width = 2.dp)
-                    } else BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
+                    } else BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground)
                 )
                 .then(clickableModifier)
         ) {
@@ -191,6 +196,24 @@ fun DateBox(
     }
 }
 
+@Composable
+fun WeekHeader(
+    daysOfWeek: List<DayOfWeek>,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier = modifier) {
+        daysOfWeek.forEach { dayOfWeek ->
+            Text(
+                textAlign = TextAlign.Center,
+                text = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = modifier
+                    .weight(1f)
+                    .wrapContentHeight()
+            )
+        }
+    }
+}
 
 @Composable
 fun OtherMonthDateBox(
@@ -234,6 +257,7 @@ fun MonthHeader(
     monthState: MonthState,
     modifier: Modifier = Modifier,
     checkedDateNum: Int,
+    checkShape: CheckShape
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -249,14 +273,18 @@ fun MonthHeader(
                     .getDisplayName(TextStyle.FULL, Locale.getDefault())
                     .lowercase()
                     .replaceFirstChar { it.titlecase() },
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = monthState.currentMonth.year.toString(),
-                style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = monthState.currentMonth.year.toString(),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
 
-        CheckedCounter(monthState = monthState, modifier = modifier, size = checkedDateNum)
+        CheckedCounter(monthState = monthState, modifier = modifier, size = checkedDateNum, checkShape = checkShape)
     }
 }
 
@@ -265,6 +293,7 @@ fun CheckedCounter(
     monthState: MonthState,
     modifier: Modifier = Modifier,
     size: Int,
+    checkShape: CheckShape
 ) {
     Row(
         modifier = Modifier.height(IntrinsicSize.Min),
@@ -280,7 +309,7 @@ fun CheckedCounter(
             ) {
                 Image(
                     imageVector = Icons.Default.KeyboardArrowLeft,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                     contentDescription = "Previous",
                 )
             }
@@ -296,8 +325,9 @@ fun CheckedCounter(
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxHeight(),
-                painter = painterResource(id = R.drawable.ic_check_24),
+                painter = painterResource(id = checkShape.resId),
                 contentDescription = "checked count",
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
             )
             //Text(text = "5 / ", modifier = Modifier.fillMaxSize(), fontSize = Typography.)
             val checkedRatio = size.toString() + "f"
@@ -317,7 +347,7 @@ fun CheckedCounter(
                 ) {
                     Image(
                         imageVector = Icons.Default.KeyboardArrowRight,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                         contentDescription = "Next",
                     )
                 }
