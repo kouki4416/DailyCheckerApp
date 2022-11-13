@@ -4,13 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pyunku.dailychecker.calendar.data.CheckedDateRepository
 import com.pyunku.dailychecker.calendar.data.local.CheckedDate
+import com.pyunku.dailychecker.data.CheckShape
+import com.pyunku.dailychecker.data.UserPreferences
 import com.pyunku.dailychecker.data.UserPreferencesDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -27,9 +31,15 @@ class CalendarViewModel @Inject constructor(
             isLoading = true
         )
     )
-
     val state: StateFlow<CalendarScreenState>
         get() = _state
+
+    val userPreferencesState: StateFlow<UserPreferences> =
+        userPreferencesRepository.userPreferencesFlow.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = UserPreferences(CheckShape.NONE)
+        )
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         exception.printStackTrace()

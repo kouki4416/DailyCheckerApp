@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
-enum class CheckShape(resId: Int) {
+enum class CheckShape(val resId: Int) {
     NONE(R.drawable.ic_circle),
     CIRCLE(R.drawable.ic_circle),
-    CHECK(R.drawable.ic_check_24)
+    CHECK(R.drawable.ic_check_24);
 }
 
 data class UserPreferences(
@@ -42,7 +42,7 @@ class UserPreferencesDataSource @Inject constructor(
             mapUserPreferences(preferences)
         }
 
-    suspend fun updateCheckShape(checkShape: CheckShape) {
+    suspend fun setCheckShape(checkShape: CheckShape) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.CHECK_SHAPE] = checkShape.name
         }

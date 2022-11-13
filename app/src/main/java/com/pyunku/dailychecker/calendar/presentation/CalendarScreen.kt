@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pyunku.dailychecker.R
+import com.pyunku.dailychecker.data.CheckShape
+import com.pyunku.dailychecker.data.UserPreferences
 import io.github.boguszpawlowski.composecalendar.SelectableCalendar
 import io.github.boguszpawlowski.composecalendar.day.DayState
 import io.github.boguszpawlowski.composecalendar.header.MonthState
@@ -48,8 +50,10 @@ fun CalendarRoute(
     viewModel: CalendarViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
+    val userPreferences by viewModel.userPreferencesState.collectAsState()
     CalendarScreen(
         state = state,
+        userPreferences,
         onCheckDate = { date ->
             viewModel.addCheckedDate(date)
         },
@@ -62,6 +66,7 @@ fun CalendarRoute(
 @Composable
 fun CalendarScreen(
     state: CalendarScreenState,
+    userPreferences: UserPreferences,
     onCheckDate: (date: LocalDate) -> Unit,
     onUncheckDate: (date: LocalDate) -> Unit,
 ) {
@@ -80,7 +85,8 @@ fun CalendarScreen(
                         RoundedCornerShape(2.dp),
                         dayState = dayState,
                         onCheckDate = onCheckDate,
-                        onUncheckDate = onUncheckDate
+                        onUncheckDate = onUncheckDate,
+                        userPreferences.checkShape
                     )
                 } else {
                     OtherMonthDateBox(
@@ -114,6 +120,7 @@ fun DateBox(
     dayState: DayState<DynamicSelectionState>,
     onCheckDate: (date: LocalDate) -> Unit,
     onUncheckDate: (date: LocalDate) -> Unit,
+    checkShape: CheckShape,
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -152,7 +159,7 @@ fun DateBox(
                     Image(
                         modifier = Modifier
                             .fillMaxSize(),
-                        painter = painterResource(id = R.drawable.ic_circle),
+                        painter = painterResource(id = checkShape.resId),
                         contentDescription = stringResource(R.string.CheckedDate)
                     )
                 }

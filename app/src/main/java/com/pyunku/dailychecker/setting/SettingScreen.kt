@@ -14,19 +14,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.alorma.compose.settings.storage.base.SettingValueState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
-import com.alorma.compose.settings.ui.SettingsList
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.pyunku.dailychecker.R
+import com.pyunku.dailychecker.data.CheckShape
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun SettingRoute(
     modifier: Modifier = Modifier,
-
+    viewModel: SettingViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     Column() {
@@ -62,10 +63,10 @@ fun SettingRoute(
 //            title = { Text(text = "Slider") },
 //        )
 //        Divider()
-        SettingsList(
+        SettingList(
             title = { Text(text = "List") },
-            subtitle = { Text(text = "Select a fruit") },
-            items = listOf("Banana", "Kiwi", "Pineapple"),
+            subtitle = { Text(text = "Select a check shape") },
+            items = CheckShape.values().map { it.name },
             action = {
                 IconButton(onClick = {
 
@@ -76,12 +77,19 @@ fun SettingRoute(
                     )
                 }
             },
+            onSelectedAction = { selectedIndex ->
+                viewModel.setCheckShape(
+                    CheckShape.values().first {
+                        it.ordinal == selectedIndex
+                    }
+                )
+            }
         )
     }
 }
 
 @Composable
-fun SettingsList(
+fun SettingList(
     modifier: Modifier = Modifier,
     state: SettingValueState<Int> = rememberIntSettingState(),
     title: @Composable () -> Unit,
@@ -91,6 +99,7 @@ fun SettingsList(
     subtitle: (@Composable () -> Unit)? = null,
     closeDialogDelay: Long = 200,
     action: (@Composable () -> Unit)? = null,
+    onSelectedAction: ((Int) -> Unit)
 ) {
 
     if (state.value >= items.size) {
@@ -118,6 +127,7 @@ fun SettingsList(
 
     val coroutineScope = rememberCoroutineScope()
     val onSelected: (Int) -> Unit = { selectedIndex ->
+        onSelectedAction(selectedIndex)
         coroutineScope.launch {
             state.value = selectedIndex
             delay(closeDialogDelay)
@@ -169,3 +179,4 @@ fun SettingsList(
         dismissButton = {},
     )
 }
+
