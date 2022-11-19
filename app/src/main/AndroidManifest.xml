@@ -16,7 +16,9 @@
         <activity
             android:name=".calendar.presentation.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.DailyChecker">
+            android:theme="@style/Theme.DailyChecker"
+            android:screenOrientation="portrait"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
