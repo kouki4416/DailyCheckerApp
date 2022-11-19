@@ -61,7 +61,14 @@ fun SettingRoute(
         Divider()
         SettingSwitch(
             title = { Text(text = stringResource(R.string.dark_mode)) },
-            state = userPreferences.isDarkMode
+            state = userPreferences.isDarkMode,
+            icon = {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_baseline_dark_mode),
+                    contentDescription = "dark mode",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                )
+            }
         ) {
             viewModel.setIsDarkMode(it)
         }
