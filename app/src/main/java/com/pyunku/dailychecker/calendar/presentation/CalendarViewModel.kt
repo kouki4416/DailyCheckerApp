@@ -6,7 +6,7 @@ import com.pyunku.dailychecker.calendar.data.CheckedDateRepository
 import com.pyunku.dailychecker.calendar.data.local.CheckedDate
 import com.pyunku.dailychecker.data.CheckShape
 import com.pyunku.dailychecker.data.UserPreferences
-import com.pyunku.dailychecker.data.UserPreferencesDataSource
+import com.pyunku.dailychecker.data.UserPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val checkedDateRepository: CheckedDateRepository,
-    private val userPreferencesRepository: UserPreferencesDataSource,
+    private val userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(
         CalendarScreenState(
@@ -35,10 +35,14 @@ class CalendarViewModel @Inject constructor(
         get() = _state
 
     val userPreferencesState: StateFlow<UserPreferences> =
-        userPreferencesRepository.userPreferencesFlow.stateIn(
+        userPreferencesRepository.userDataStream.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UserPreferences(CheckShape.CIRCLE)
+            initialValue = UserPreferences(
+                checkShape = CheckShape.CIRCLE,
+                shownFirstAppReview = false,
+                shownSecondAppReview = false,
+                shownThirdAppReview = false)
         )
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
@@ -85,6 +89,24 @@ class CalendarViewModel @Inject constructor(
         )
         CoroutineScope(Dispatchers.IO).launch {
             checkedDateRepository.addCheckedDate(checkedDate)
+        }
+    }
+
+    fun setShownFirstAppReview() {
+        viewModelScope.launch {
+            userPreferencesRepository.setShownFirstAppReview()
+        }
+    }
+
+    fun setShownSecondAppReview() {
+        viewModelScope.launch {
+            userPreferencesRepository.setShownSecondAppReview()
+        }
+    }
+
+    fun setShownThirdAppReview() {
+        viewModelScope.launch {
+            userPreferencesRepository.setShownThirdAppReview()
         }
     }
 }

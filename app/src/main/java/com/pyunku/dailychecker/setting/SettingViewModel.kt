@@ -14,17 +14,29 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    private val userPreferencesRepository: UserPreferencesRepository
-): ViewModel(){
+    private val userPreferencesRepository: UserPreferencesRepository,
+) : ViewModel() {
     val userPreferencesState: StateFlow<UserPreferences> =
         userPreferencesRepository.userDataStream.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UserPreferences(CheckShape.CIRCLE)
+            initialValue = UserPreferences(
+                checkShape = CheckShape.CIRCLE,
+                shownFirstAppReview = false,
+                shownSecondAppReview = false,
+                shownThirdAppReview = false
+            )
         )
-    fun setCheckShape(checkShape: CheckShape){
-        viewModelScope.launch{
+
+    fun setCheckShape(checkShape: CheckShape) {
+        viewModelScope.launch {
             userPreferencesRepository.setCheckShape(checkShape)
+        }
+    }
+
+    fun setIsDarkMode(isDarkMode: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setIsDarkMode(isDarkMode)
         }
     }
 }

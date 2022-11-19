@@ -1,5 +1,6 @@
 package com.pyunku.dailychecker.calendar.presentation
 
+import android.app.Activity
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -15,10 +16,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -27,12 +25,16 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.pyunku.dailychecker.R
 import com.pyunku.dailychecker.data.CheckShape
 import com.pyunku.dailychecker.data.UserPreferences
@@ -65,7 +67,62 @@ fun CalendarRoute(
             viewModel.deleteCheckedDate(date)
         }
     )
+
+    // create in app review
+    if (state.checkedDates.size == 5 && !userPreferences.shownFirstAppReview) {
+        val localContext = LocalContext.current
+        val reviewManager = remember {
+            ReviewManagerFactory.create(localContext)
+        }
+        val reviewInfo = rememberReviewTask(reviewManager)
+        reviewInfo?.let {
+            val flow = reviewManager.launchReviewFlow(localContext as Activity, reviewInfo)
+            flow.addOnCompleteListener {
+                viewModel.setShownFirstAppReview()
+            }
+        }
+    }
+    if (state.checkedDates.size == 10 && !userPreferences.shownSecondAppReview) {
+        val localContext = LocalContext.current
+        val reviewManager = remember {
+            ReviewManagerFactory.create(localContext)
+        }
+        val reviewInfo = rememberReviewTask(reviewManager)
+        reviewInfo?.let {
+            val flow = reviewManager.launchReviewFlow(localContext as Activity, reviewInfo)
+            flow.addOnCompleteListener {
+                viewModel.setShownSecondAppReview()
+            }
+        }
+    }
+    if (state.checkedDates.size == 15 && !userPreferences.shownThirdAppReview) {
+        val localContext = LocalContext.current
+        val reviewManager = remember {
+            ReviewManagerFactory.create(localContext)
+        }
+        val reviewInfo = rememberReviewTask(reviewManager)
+        reviewInfo?.let {
+            val flow = reviewManager.launchReviewFlow(localContext as Activity, reviewInfo)
+            flow.addOnCompleteListener {
+                viewModel.setShownThirdAppReview()
+            }
+        }
+    }
 }
+
+@Composable
+fun rememberReviewTask(reviewManager: ReviewManager): ReviewInfo? {
+    var reviewInfo: ReviewInfo? by remember {
+        mutableStateOf(null)
+    }
+    reviewManager.requestReviewFlow().addOnCompleteListener {
+        if (it.isSuccessful) {
+            reviewInfo = it.result
+        }
+    }
+    return reviewInfo
+}
+
 
 @Composable
 fun CalendarScreen(

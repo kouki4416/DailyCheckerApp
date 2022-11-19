@@ -5,10 +5,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +24,9 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.pyunku.dailychecker.R
 import com.pyunku.dailychecker.data.CheckShape
 import com.pyunku.dailychecker.setting.presentation.SettingMenuLink
+import com.pyunku.dailychecker.setting.presentation.SettingsTileAction
+import com.pyunku.dailychecker.setting.presentation.SettingsTileIcon
+import com.pyunku.dailychecker.setting.presentation.SettingsTileTexts
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -57,6 +58,13 @@ fun SettingRoute(
                 )
             }
         )
+        Divider()
+        SettingSwitch(
+            title = { Text(text = stringResource(R.string.dark_mode)) },
+            state = userPreferences.isDarkMode
+        ) {
+            viewModel.setIsDarkMode(it)
+        }
         Divider()
         SettingsMenuLink(
             title = { Text(text = stringResource(R.string.License)) },
@@ -162,3 +170,41 @@ fun SettingList(
         dismissButton = {},
     )
 }
+
+@Composable
+fun SettingSwitch(
+    modifier: Modifier = Modifier,
+    state: Boolean = false,
+    icon: @Composable (() -> Unit)? = null,
+    title: @Composable () -> Unit,
+    subtitle: @Composable (() -> Unit)? = null,
+    onCheckedChange: (Boolean) -> Unit = {},
+) {
+    var storageValue = state
+    val update: (Boolean) -> Unit = { boolean ->
+        storageValue = boolean
+        onCheckedChange(storageValue)
+    }
+    Surface {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .toggleable(
+                    value = storageValue,
+                    role = Role.Switch,
+                    onValueChange = { update(!storageValue) }
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SettingsTileIcon(icon = icon)
+            SettingsTileTexts(title = title, subtitle = subtitle)
+            SettingsTileAction {
+                Switch(
+                    checked = storageValue,
+                    onCheckedChange = update
+                )
+            }
+        }
+    }
+}
+

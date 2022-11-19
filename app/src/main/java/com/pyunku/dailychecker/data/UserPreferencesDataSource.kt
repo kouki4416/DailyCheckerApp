@@ -1,10 +1,7 @@
 package com.pyunku.dailychecker.data
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import com.pyunku.dailychecker.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -18,7 +15,11 @@ enum class CheckShape(val resId: Int) {
 }
 
 data class UserPreferences(
-    val checkShape: CheckShape,
+    val checkShape: CheckShape = CheckShape.CIRCLE,
+    val shownFirstAppReview: Boolean = false,
+    val shownSecondAppReview: Boolean = false,
+    val shownThirdAppReview: Boolean = false,
+    val isDarkMode: Boolean = false,
 )
 
 class UserPreferencesDataSource @Inject constructor(
@@ -26,6 +27,10 @@ class UserPreferencesDataSource @Inject constructor(
 ) {
     private object PreferencesKeys {
         val CHECK_SHAPE = stringPreferencesKey("checkShape")
+        val SHOWN_FIRST_APP_REVIEW = booleanPreferencesKey("shownFirstAppReview")
+        val SHOWN_SECOND_APP_REVIEW = booleanPreferencesKey("shownSecondAppReview")
+        val SHOWN_THIRD_APP_REVIEW = booleanPreferencesKey("shownThirdAppReview")
+        val IS_DARK_MODE = booleanPreferencesKey("isDarkMode")
     }
 
     // Get user preferences flow
@@ -47,11 +52,45 @@ class UserPreferencesDataSource @Inject constructor(
         }
     }
 
+    suspend fun setShownFirstAppReview() {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SHOWN_FIRST_APP_REVIEW] = true
+        }
+    }
+
+    suspend fun setShownSecondAppReview() {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SHOWN_SECOND_APP_REVIEW] = true
+        }
+    }
+
+    suspend fun setShownThirdAppReview() {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SHOWN_THIRD_APP_REVIEW] = true
+        }
+    }
+
+    suspend fun setIsDarkMode(isDarkMode: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.IS_DARK_MODE] = isDarkMode
+        }
+    }
+
     private fun mapUserPreferences(preferences: Preferences): UserPreferences {
         val checkShape = CheckShape.valueOf(
             preferences[PreferencesKeys.CHECK_SHAPE] ?: CheckShape.CIRCLE.name
         )
-        return UserPreferences(checkShape = checkShape)
+        val shownFirstAppReview = preferences[PreferencesKeys.SHOWN_FIRST_APP_REVIEW] ?: false
+        val shownSecondAppReview = preferences[PreferencesKeys.SHOWN_SECOND_APP_REVIEW] ?: false
+        val shownThirdAppReview = preferences[PreferencesKeys.SHOWN_THIRD_APP_REVIEW] ?: false
+        val isDarkMode = preferences[PreferencesKeys.IS_DARK_MODE] ?: false
+        return UserPreferences(
+            checkShape = checkShape,
+            shownFirstAppReview = shownFirstAppReview,
+            shownSecondAppReview = shownSecondAppReview,
+            shownThirdAppReview = shownThirdAppReview,
+            isDarkMode = isDarkMode
+        )
     }
 
 }
