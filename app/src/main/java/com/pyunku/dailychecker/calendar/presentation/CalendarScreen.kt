@@ -159,7 +159,8 @@ fun CalendarScreen(
                 } else {
                     UnselectableDateBox(
                         shape = RoundedCornerShape(2.dp),
-                        dayState = dayState
+                        dayState = dayState,
+                        checkShape = userPreferences.checkShape
                     )
                 }
             },
@@ -284,6 +285,7 @@ fun WeekHeader(
 fun UnselectableDateBox(
     shape: Shape,
     dayState: DayState<DynamicSelectionState>,
+    checkShape: CheckShape,
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -308,8 +310,9 @@ fun UnselectableDateBox(
                     Image(
                         modifier = Modifier
                             .fillMaxSize(),
-                        painter = painterResource(id = R.drawable.ic_circle),
-                        contentDescription = stringResource(R.string.CheckedDate)
+                        painter = painterResource(id = checkShape.resId),
+                        contentDescription = stringResource(R.string.CheckedDate),
+                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.secondaryContainer)
                     )
                 }
             }
@@ -484,7 +487,7 @@ fun CheckedCounter(
             Text(
                 modifier = Modifier
                     .weight(0.20f)
-                    .padding(end = 4.dp),
+                    .padding(start = 2.dp, end = 4.dp),
                 text = "$size/${monthState.currentMonth.lengthOfMonth()}",
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize
             )
