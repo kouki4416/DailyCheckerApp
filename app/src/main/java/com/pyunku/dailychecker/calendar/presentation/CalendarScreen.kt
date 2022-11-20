@@ -133,7 +133,7 @@ fun CalendarScreen(
     onCheckDate: (date: LocalDate) -> Unit,
     onUncheckDate: (date: LocalDate) -> Unit,
     initialTask: String,
-    onTaskTextChanged: (task: String) -> Unit
+    onTaskTextChanged: (task: String) -> Unit,
 ) {
     if (!state.isLoading) {
         val calendarState = rememberSelectableCalendarState(
@@ -195,7 +195,7 @@ fun DateBox(
     Column(modifier = Modifier
         .fillMaxWidth()
         .wrapContentSize(Alignment.Center)
-        .padding(3.dp)
+        .padding(2.dp)
     ) {
         // Define clickable modifier depending on date
         var clickableModifier = Modifier
@@ -324,7 +324,7 @@ fun MonthHeader(
     checkedDateNum: Int,
     checkShape: CheckShape,
     initialTask: String,
-    onTaskTextChanged: (task: String) -> Unit
+    onTaskTextChanged: (task: String) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -340,21 +340,58 @@ fun MonthHeader(
                 ),
             horizontalArrangement = Arrangement.Center,
         ) {
-            Text(
-                modifier = Modifier.testTag("MonthLabel"),
-                text = monthState.currentMonth.month
-                    .getDisplayName(TextStyle.FULL, Locale.getDefault())
-                    .lowercase()
-                    .replaceFirstChar { it.titlecase() },
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = monthState.currentMonth.year.toString(),
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            IconButton(
+                modifier = Modifier
+                    .testTag("Decrement")
+                    .weight(0.1f)
+                   ,
+                onClick = { monthState.currentMonth = monthState.currentMonth.minusMonths(1) }
+            ) {
+                Image(
+                    imageVector = Icons.Default.KeyboardArrowLeft,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                    contentDescription = "Previous",
+                )
+            }
+
+            Row(
+                modifier = Modifier.weight(0.8f),
+                horizontalArrangement = Arrangement.Center
+            ){
+
+                Text(
+                    modifier = Modifier.testTag("MonthLabel"),
+                    text = monthState.currentMonth.month
+                        .getDisplayName(TextStyle.FULL, Locale.getDefault())
+                        .lowercase()
+                        .replaceFirstChar { it.titlecase() },
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = monthState.currentMonth.year.toString(),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+            // Show next button only if the month on the screen is not current month
+            Box(modifier = Modifier.weight(0.1f)){
+                if (monthState.currentMonth != YearMonth.now()) {
+                    IconButton(
+                        modifier = Modifier
+                            .testTag("Increment")
+                        ,
+                        onClick = { monthState.currentMonth = monthState.currentMonth.plusMonths(1) }
+                    ) {
+                        Image(
+                            imageVector = Icons.Default.KeyboardArrowRight,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                            contentDescription = "Next",
+                        )
+                    }
+                }
+            }
         }
 
         CheckedCounter(
@@ -379,10 +416,12 @@ fun CheckedCounter(
     size: Int,
     checkShape: CheckShape,
     initialTask: String,
-    onTaskTextChanged: (task: String) -> Unit
+    onTaskTextChanged: (task: String) -> Unit,
 ) {
     Row(
-        modifier = Modifier.height(IntrinsicSize.Min),
+        modifier = Modifier
+            .height(IntrinsicSize.Min)
+            .padding(bottom = 6.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -397,7 +436,7 @@ fun CheckedCounter(
             val focusManager = LocalFocusManager.current
             TextField(
                 modifier = Modifier
-                    .weight(0.6f)
+                    .weight(0.7f)
                     .padding(
                         start = 8.dp,
                         bottom = 8.dp,
@@ -406,8 +445,18 @@ fun CheckedCounter(
                 singleLine = true,
                 maxLines = 1,
                 value = text,
+                placeholder = {
+                    Text(text ="例)ジムに行けた日")
+                },
+                leadingIcon = {
+                    Image(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(id = R.drawable.ic_baseline_edit),
+                        contentDescription = "edit",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.outline)
+                    )
+                },
                 onValueChange = { text = it },
-                placeholder = { Text(text = "タスク") },
                 keyboardActions = KeyboardActions(
                     onDone = {
                         focusManager.clearFocus()
@@ -416,57 +465,32 @@ fun CheckedCounter(
                     onNext = { focusManager.clearFocus() }
                 ),
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
+                    containerColor = MaterialTheme.colorScheme.background,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                ),
+
             )
             Image(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxHeight()
-                    .weight(0.2f),
+                    .padding(start = 6.dp)
+                    .size(36.dp)
+                    .weight(0.10f),
                 painter = painterResource(id = checkShape.resId),
                 contentDescription = "checked count",
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
             )
             Text(
                 modifier = Modifier
-                    .weight(0.2f),
+                    .weight(0.20f)
+                    .padding(end = 4.dp),
                 text = "$size/${monthState.currentMonth.lengthOfMonth()}",
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize
             )
         }
 
-        Row(modifier = Modifier.weight(0.2f)) {
-            IconButton(
-                modifier = Modifier
-                    .testTag("Decrement")
-                    .weight(0.5f)
-                    .fillMaxHeight(),
-                onClick = { monthState.currentMonth = monthState.currentMonth.minusMonths(1) }
-            ) {
-                Image(
-                    imageVector = Icons.Default.KeyboardArrowLeft,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                    contentDescription = "Previous",
-                )
-            }
-            // Show next button only if the month on the screen is not current month
-            if (monthState.currentMonth != YearMonth.now()) {
-                IconButton(
-                    modifier = Modifier
-                        .testTag("Increment")
-                        .weight(0.5f)
-                        .fillMaxHeight(),
-                    onClick = { monthState.currentMonth = monthState.currentMonth.plusMonths(1) }
-                ) {
-                    Image(
-                        imageVector = Icons.Default.KeyboardArrowRight,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                        contentDescription = "Next",
-                    )
-                }
-            }
-        }
+
     }
 }
 
