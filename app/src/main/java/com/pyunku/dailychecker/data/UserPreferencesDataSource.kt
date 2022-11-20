@@ -20,6 +20,7 @@ data class UserPreferences(
     val shownSecondAppReview: Boolean = false,
     val shownThirdAppReview: Boolean = false,
     val isDarkMode: Boolean = false,
+    val currentTask: String = ""
 )
 
 class UserPreferencesDataSource @Inject constructor(
@@ -31,6 +32,7 @@ class UserPreferencesDataSource @Inject constructor(
         val SHOWN_SECOND_APP_REVIEW = booleanPreferencesKey("shownSecondAppReview")
         val SHOWN_THIRD_APP_REVIEW = booleanPreferencesKey("shownThirdAppReview")
         val IS_DARK_MODE = booleanPreferencesKey("isDarkMode")
+        val CURRENT_TASK = stringPreferencesKey("currentTask")
     }
 
     // Get user preferences flow
@@ -76,6 +78,12 @@ class UserPreferencesDataSource @Inject constructor(
         }
     }
 
+    suspend fun updateCurrentTask(task: String){
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.CURRENT_TASK] = task
+        }
+    }
+
     private fun mapUserPreferences(preferences: Preferences): UserPreferences {
         val checkShape = CheckShape.valueOf(
             preferences[PreferencesKeys.CHECK_SHAPE] ?: CheckShape.CIRCLE.name
@@ -84,12 +92,14 @@ class UserPreferencesDataSource @Inject constructor(
         val shownSecondAppReview = preferences[PreferencesKeys.SHOWN_SECOND_APP_REVIEW] ?: false
         val shownThirdAppReview = preferences[PreferencesKeys.SHOWN_THIRD_APP_REVIEW] ?: false
         val isDarkMode = preferences[PreferencesKeys.IS_DARK_MODE] ?: false
+        val currentTask = preferences[PreferencesKeys.CURRENT_TASK] ?: ""
         return UserPreferences(
             checkShape = checkShape,
             shownFirstAppReview = shownFirstAppReview,
             shownSecondAppReview = shownSecondAppReview,
             shownThirdAppReview = shownThirdAppReview,
-            isDarkMode = isDarkMode
+            isDarkMode = isDarkMode,
+            currentTask = currentTask
         )
     }
 

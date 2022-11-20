@@ -109,4 +109,10 @@ class CalendarViewModel @Inject constructor(
             userPreferencesRepository.setShownThirdAppReview()
         }
     }
+
+    fun updateCurrentTask(task: String){
+        viewModelScope.launch {
+            userPreferencesRepository.updateCurrentTask(task)
+        }
+    }
 }

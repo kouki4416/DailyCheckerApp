@@ -14,7 +14,7 @@ class UserPreferencesRepository @Inject constructor(
     suspend fun setShownFirstAppReview() = userPreferencesDataSource.setShownFirstAppReview()
     suspend fun setShownSecondAppReview() = userPreferencesDataSource.setShownSecondAppReview()
     suspend fun setShownThirdAppReview() = userPreferencesDataSource.setShownThirdAppReview()
-    suspend fun setIsDarkMode(isDarkMode: Boolean) =
-        userPreferencesDataSource.setIsDarkMode(isDarkMode)
+    suspend fun setIsDarkMode(isDarkMode: Boolean) = userPreferencesDataSource.setIsDarkMode(isDarkMode)
+    suspend fun updateCurrentTask(task: String) = userPreferencesDataSource.updateCurrentTask(task)
 
 }

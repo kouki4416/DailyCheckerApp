@@ -2,19 +2,16 @@ package com.pyunku.dailychecker.calendar.presentation
 
 import android.app.Activity
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -65,7 +63,11 @@ fun CalendarRoute(
         },
         onUncheckDate = { date ->
             viewModel.deleteCheckedDate(date)
-        }
+        },
+        onTaskTextChanged = { task ->
+            viewModel.updateCurrentTask(task)
+        },
+        initialTask = userPreferences.currentTask
     )
 
     // create in app review
@@ -130,6 +132,8 @@ fun CalendarScreen(
     userPreferences: UserPreferences,
     onCheckDate: (date: LocalDate) -> Unit,
     onUncheckDate: (date: LocalDate) -> Unit,
+    initialTask: String,
+    onTaskTextChanged: (task: String) -> Unit
 ) {
     if (!state.isLoading) {
         val calendarState = rememberSelectableCalendarState(
@@ -168,7 +172,9 @@ fun CalendarScreen(
                             it.month == monthState.currentMonth.month &&
                                     it.year == monthState.currentMonth.year
                         }.size,
-                    checkShape = userPreferences.checkShape
+                    checkShape = userPreferences.checkShape,
+                    onTaskTextChanged = onTaskTextChanged,
+                    initialTask = initialTask
                 )
             },
             weekHeader = { list ->
@@ -195,9 +201,6 @@ fun DateBox(
         var clickableModifier = Modifier
             .size(70.dp)
             .clip(shape)
-            .border(
-                BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground)
-            )
         clickableModifier =
             if (dayState.date.isBefore(LocalDate.now()) || dayState.isCurrentDay) {
                 clickableModifier.then(
@@ -291,7 +294,6 @@ fun UnselectableDateBox(
             modifier = Modifier
                 .size(70.dp)
                 .clip(shape)
-                .border(BorderStroke(1.dp, Color.LightGray))
                 .disableClickAndRipple()
         ) {
             Column(
@@ -300,7 +302,7 @@ fun UnselectableDateBox(
             ) {
                 Text(
                     text = dayState.date.dayOfMonth.toString(),
-                    color = MaterialTheme.colorScheme.outline
+                    color = MaterialTheme.colorScheme.secondaryContainer
                 )
                 if (dayState.selectionState.isDateSelected(dayState.date)) {
                     Image(
@@ -321,19 +323,21 @@ fun MonthHeader(
     modifier: Modifier = Modifier,
     checkedDateNum: Int,
     checkShape: CheckShape,
+    initialTask: String,
+    onTaskTextChanged: (task: String) -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding( top = 12.dp)
+            .padding(top = 12.dp)
     )
     {
         Row(
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier
+                .fillMaxWidth()
                 .padding(
                     start = 12.dp,
-                )
-            ,
+                ),
             horizontalArrangement = Arrangement.Center,
         ) {
             Text(
@@ -360,28 +364,84 @@ fun MonthHeader(
                     bottom = 12.dp
                 ),
             size = checkedDateNum,
-            checkShape = checkShape)
+            checkShape = checkShape,
+            onTaskTextChanged = onTaskTextChanged,
+            initialTask = initialTask
+        )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckedCounter(
     monthState: MonthState,
     modifier: Modifier = Modifier,
     size: Int,
     checkShape: CheckShape,
+    initialTask: String,
+    onTaskTextChanged: (task: String) -> Unit
 ) {
     Row(
         modifier = Modifier.height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(modifier = Modifier.weight(0.25f)) {
+        Row(
+            modifier = Modifier
+                .weight(0.8f)
+                .fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            var text by remember { mutableStateOf(initialTask) }
+            val focusManager = LocalFocusManager.current
+            TextField(
+                modifier = Modifier
+                    .weight(0.6f)
+                    .padding(
+                        start = 8.dp,
+                        bottom = 8.dp,
+                    ),
+                textStyle = MaterialTheme.typography.bodyLarge,
+                singleLine = true,
+                maxLines = 1,
+                value = text,
+                onValueChange = { text = it },
+                placeholder = { Text(text = "タスク") },
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                        onTaskTextChanged(text)
+                    },
+                    onNext = { focusManager.clearFocus() }
+                ),
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
+            )
+            Image(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxHeight()
+                    .weight(0.2f),
+                painter = painterResource(id = checkShape.resId),
+                contentDescription = "checked count",
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+            )
+            Text(
+                modifier = Modifier
+                    .weight(0.2f),
+                text = "$size/${monthState.currentMonth.lengthOfMonth()}",
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize
+            )
+        }
+
+        Row(modifier = Modifier.weight(0.2f)) {
             IconButton(
-                modifier = modifier
+                modifier = Modifier
                     .testTag("Decrement")
-                    .weight(0.25f)
-                    .fillMaxSize(),
+                    .weight(0.5f)
+                    .fillMaxHeight(),
                 onClick = { monthState.currentMonth = monthState.currentMonth.minusMonths(1) }
             ) {
                 Image(
@@ -390,34 +450,13 @@ fun CheckedCounter(
                     contentDescription = "Previous",
                 )
             }
-        }
-        Row(
-            modifier = Modifier
-                .weight(0.5f)
-                .fillMaxSize(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxHeight(),
-                painter = painterResource(id = checkShape.resId),
-                contentDescription = "checked count",
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-            )
-            Text(
-                text = "$size/${monthState.currentMonth.lengthOfMonth()}",
-                fontSize = MaterialTheme.typography.headlineSmall.fontSize
-            )
-        }
-        // Show next button only if the month on the screen is not current month
-        Row(modifier = Modifier.weight(0.25f)) {
+            // Show next button only if the month on the screen is not current month
             if (monthState.currentMonth != YearMonth.now()) {
                 IconButton(
                     modifier = Modifier
                         .testTag("Increment")
-                        .fillMaxSize(),
+                        .weight(0.5f)
+                        .fillMaxHeight(),
                     onClick = { monthState.currentMonth = monthState.currentMonth.plusMonths(1) }
                 ) {
                     Image(
@@ -449,6 +488,8 @@ fun PreviewCalendar() {
         UserPreferences(),
         onCheckDate = {},
         onUncheckDate = {},
+        onTaskTextChanged = {},
+        initialTask = ""
     )
 }
 
