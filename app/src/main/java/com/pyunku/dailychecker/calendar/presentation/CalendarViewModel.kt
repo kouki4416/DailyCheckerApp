@@ -2,7 +2,7 @@ package com.pyunku.dailychecker.calendar.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pyunku.dailychecker.calendar.data.CheckedDateRepository
+import com.pyunku.dailychecker.calendar.data.CheckedDataRepository
 import com.pyunku.dailychecker.calendar.data.local.CheckedDate
 import com.pyunku.dailychecker.common.data.CheckShape
 import com.pyunku.dailychecker.common.data.UserPreferences
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val checkedDateRepository: CheckedDateRepository,
+    private val checkedDataRepository: CheckedDataRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(
@@ -56,7 +56,7 @@ class CalendarViewModel @Inject constructor(
 
     private fun getCheckedDate() {
         viewModelScope.launch(errorHandler) {
-            checkedDateRepository.getCheckedDates().collect {
+            checkedDataRepository.getCheckedDates().collect {
                 _state.value = _state.value.copy(
                     checkedDates = it.map { checkedDate ->
                         LocalDate.of(checkedDate.year, checkedDate.month, checkedDate.day)
@@ -76,7 +76,7 @@ class CalendarViewModel @Inject constructor(
             day = date.dayOfMonth
         )
         CoroutineScope(Dispatchers.IO).launch {
-            checkedDateRepository.deleteCheckedDate(checkedDate)
+            checkedDataRepository.deleteCheckedDate(checkedDate)
         }
     }
 
@@ -88,7 +88,7 @@ class CalendarViewModel @Inject constructor(
             day = date.dayOfMonth
         )
         CoroutineScope(Dispatchers.IO).launch {
-            checkedDateRepository.addCheckedDate(checkedDate)
+            checkedDataRepository.addCheckedDate(checkedDate)
         }
     }
 
@@ -110,7 +110,7 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    fun updateCurrentTask(task: String){
+    fun updateCurrentTask(task: String) {
         viewModelScope.launch {
             userPreferencesRepository.updateCurrentTask(task)
         }

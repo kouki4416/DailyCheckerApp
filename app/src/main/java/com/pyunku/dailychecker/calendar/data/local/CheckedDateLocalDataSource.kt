@@ -1,11 +1,9 @@
-package com.pyunku.dailychecker.calendar.data
+package com.pyunku.dailychecker.calendar.data.local
 
-import com.pyunku.dailychecker.calendar.data.local.CheckedDate
-import com.pyunku.dailychecker.calendar.data.local.CheckedDateDao
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class CheckedDateRepository @Inject constructor(private val checkedDateDao: CheckedDateDao) {
+class CheckedDateLocalDataSource @Inject constructor(private val checkedDateDao: CheckedDateDao) {
 
     fun getCheckedDates(): Flow<List<CheckedDate>>{
         return checkedDateDao.findAll()
