@@ -2,7 +2,7 @@ package com.pyunku.dailychecker.calendar.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pyunku.dailychecker.calendar.data.CheckedDataRepository
+import com.pyunku.dailychecker.calendar.data.OfflineFirstCheckedDateRepository
 import com.pyunku.dailychecker.calendar.data.local.CheckedDate
 import com.pyunku.dailychecker.common.data.CheckShape
 import com.pyunku.dailychecker.common.data.UserPreferences
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val checkedDataRepository: CheckedDataRepository,
+    private val offlineFirstCheckedDateRepository: OfflineFirstCheckedDateRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(
@@ -56,7 +56,7 @@ class CalendarViewModel @Inject constructor(
 
     private fun getCheckedDate() {
         viewModelScope.launch(errorHandler) {
-            checkedDataRepository.getCheckedDates().collect {
+            offlineFirstCheckedDateRepository.getCheckedDates().collect {
                 _state.value = _state.value.copy(
                     checkedDates = it.map { checkedDate ->
                         LocalDate.of(checkedDate.year, checkedDate.month, checkedDate.day)
@@ -76,7 +76,7 @@ class CalendarViewModel @Inject constructor(
             day = date.dayOfMonth
         )
         CoroutineScope(Dispatchers.IO).launch {
-            checkedDataRepository.deleteCheckedDate(checkedDate)
+            offlineFirstCheckedDateRepository.deleteCheckedDate(checkedDate)
         }
     }
 
@@ -88,7 +88,7 @@ class CalendarViewModel @Inject constructor(
             day = date.dayOfMonth
         )
         CoroutineScope(Dispatchers.IO).launch {
-            checkedDataRepository.addCheckedDate(checkedDate)
+            offlineFirstCheckedDateRepository.addCheckedDate(checkedDate)
         }
     }
 

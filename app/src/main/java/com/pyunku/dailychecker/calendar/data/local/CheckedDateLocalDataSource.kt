@@ -9,17 +9,17 @@ import javax.inject.Inject
 class CheckedDateLocalDataSource @Inject constructor(
     private val checkedDateDao: CheckedDateDao,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
-) {
+) : CheckedDateDataSource {
 
-    fun getCheckedDates(): Flow<List<CheckedDate>> {
+    override fun getCheckedDates(): Flow<List<CheckedDate>> {
         return checkedDateDao.findAll()
     }
 
-    suspend fun deleteCheckedDate(date: CheckedDate) = withContext(ioDispatcher) {
+    override suspend fun deleteCheckedDate(date: CheckedDate) = withContext(ioDispatcher) {
         checkedDateDao.delete(date)
     }
 
-    suspend fun addCheckedDate(date: CheckedDate) = withContext(ioDispatcher) {
+    override suspend fun addCheckedDate(date: CheckedDate) = withContext(ioDispatcher) {
         checkedDateDao.insert(date)
     }
 }
