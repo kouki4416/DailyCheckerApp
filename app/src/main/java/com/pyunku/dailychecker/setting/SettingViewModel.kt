@@ -2,9 +2,9 @@ package com.pyunku.dailychecker.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pyunku.dailychecker.data.CheckShape
-import com.pyunku.dailychecker.data.UserPreferences
-import com.pyunku.dailychecker.data.UserPreferencesRepository
+import com.pyunku.dailychecker.common.data.CheckShape
+import com.pyunku.dailychecker.common.data.UserPreferences
+import com.pyunku.dailychecker.common.data.UserPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

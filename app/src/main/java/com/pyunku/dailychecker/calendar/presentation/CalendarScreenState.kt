@@ -1,6 +1,6 @@
 package com.pyunku.dailychecker.calendar.presentation
 
-import com.pyunku.dailychecker.data.CheckShape
+import com.pyunku.dailychecker.common.data.CheckShape
 import java.time.LocalDate
 
 data class CalendarScreenState(

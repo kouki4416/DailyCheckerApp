@@ -34,8 +34,8 @@ import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.pyunku.dailychecker.R
-import com.pyunku.dailychecker.data.CheckShape
-import com.pyunku.dailychecker.data.UserPreferences
+import com.pyunku.dailychecker.common.data.CheckShape
+import com.pyunku.dailychecker.common.data.UserPreferences
 import io.github.boguszpawlowski.composecalendar.SelectableCalendar
 import io.github.boguszpawlowski.composecalendar.day.DayState
 import io.github.boguszpawlowski.composecalendar.header.MonthState

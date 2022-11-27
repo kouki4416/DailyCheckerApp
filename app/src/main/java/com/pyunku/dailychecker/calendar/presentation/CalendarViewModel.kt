@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pyunku.dailychecker.calendar.data.CheckedDateRepository
 import com.pyunku.dailychecker.calendar.data.local.CheckedDate
-import com.pyunku.dailychecker.data.CheckShape
-import com.pyunku.dailychecker.data.UserPreferences
-import com.pyunku.dailychecker.data.UserPreferencesRepository
+import com.pyunku.dailychecker.common.data.CheckShape
+import com.pyunku.dailychecker.common.data.UserPreferences
+import com.pyunku.dailychecker.common.data.UserPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope

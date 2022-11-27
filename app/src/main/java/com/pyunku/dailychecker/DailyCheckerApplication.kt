@@ -1,4 +1,4 @@
-package com.pyunku.dailychecker.app
+package com.pyunku.dailychecker
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

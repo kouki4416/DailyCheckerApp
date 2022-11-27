@@ -1,4 +1,4 @@
-package com.pyunku.dailychecker.data
+package com.pyunku.dailychecker.common.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*

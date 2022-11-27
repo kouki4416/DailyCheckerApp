@@ -1,4 +1,4 @@
-package com.pyunku.dailychecker.data
+package com.pyunku.dailychecker.common.data
 
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

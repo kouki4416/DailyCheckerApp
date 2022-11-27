@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
-import com.pyunku.dailychecker.data.UserPreferences
+import com.pyunku.dailychecker.common.data.UserPreferences
 import kotlinx.coroutines.flow.StateFlow
 
 private val LightColors = lightColorScheme(

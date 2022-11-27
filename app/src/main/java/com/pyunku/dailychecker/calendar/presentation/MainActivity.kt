@@ -11,8 +11,8 @@ import androidx.navigation.NavHostController
 import com.google.android.gms.ads.MobileAds
 import com.pyunku.dailychecker.MainScreen
 import com.pyunku.dailychecker.R
-import com.pyunku.dailychecker.data.UserPreferences
-import com.pyunku.dailychecker.data.UserPreferencesRepository
+import com.pyunku.dailychecker.common.data.UserPreferences
+import com.pyunku.dailychecker.common.data.UserPreferencesRepository
 import com.pyunku.dailychecker.ui.theme.DailyCheckerTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.SharingStarted

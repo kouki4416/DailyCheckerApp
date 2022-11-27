@@ -22,7 +22,7 @@ import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.pyunku.dailychecker.R
-import com.pyunku.dailychecker.data.CheckShape
+import com.pyunku.dailychecker.common.data.CheckShape
 import com.pyunku.dailychecker.setting.presentation.SettingMenuLink
 import com.pyunku.dailychecker.setting.presentation.SettingsTileAction
 import com.pyunku.dailychecker.setting.presentation.SettingsTileIcon
