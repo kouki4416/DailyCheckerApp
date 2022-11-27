@@ -141,13 +141,14 @@ dependencies {
     }
 
     // AndroidX Test - JVM testing
-    testImplementation "androidx.test:core-ktx:$androidX_test_core_version"
-    testImplementation "androidx.test.ext:junit:$androidX_test_ext_kotlin_runner_version"
+//    testImplementation "androidx.test:core-ktx:$androidX_test_core_version"
+//    testImplementation "androidx.test.ext:junit:$androidX_test_ext_kotlin_runner_version"
 
     // AndroidX Test - Instrumented testing
     androidTestImplementation "androidx.test.ext:junit:$androidX_test_ext_kotlin_runner_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+    //These espresso has problem, so remove for now
+//    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+//    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
     androidTestImplementation "androidx.arch.core:core-testing:$arch_testing_version"
 
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
