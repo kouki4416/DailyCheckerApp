@@ -130,11 +130,25 @@ dependencies {
 
     // Instrumented unit test
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    // AndroidX for testing
     androidTestImplementation "androidx.test.ext:junit-ktx:$junit_ktx_version"
     androidTestImplementation "androidx.test:core:$test_core_version"
+    androidTestImplementation "org.mockito:mockito-core:$mockito_version"
     androidTestImplementation "androidx.test:core-ktx:$test_core_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version") {
+        // https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug#debug-agent-and-android
+        exclude group: "org.jetbrains.kotlinx", module: "kotlinx-coroutines-debug"
+    }
+
+    // AndroidX Test - JVM testing
+    testImplementation "androidx.test:core-ktx:$androidX_test_core_version"
+    testImplementation "androidx.test.ext:junit:$androidX_test_ext_kotlin_runner_version"
+
+    // AndroidX Test - Instrumented testing
+    androidTestImplementation "androidx.test.ext:junit:$androidX_test_ext_kotlin_runner_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+    androidTestImplementation "androidx.arch.core:core-testing:$arch_testing_version"
 
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
