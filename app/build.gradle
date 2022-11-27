@@ -123,10 +123,13 @@ dependencies {
     testImplementation "org.hamcrest:hamcrest-all:$hamcrest_version"
     testImplementation "androidx.arch.core:core-testing:$arch_testing_version"
     testImplementation "org.robolectric:robolectric:$robolectric_version"
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.powermock:powermock-api-mockito2:$power_mock_version"
     testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version") {
         // https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug#debug-agent-and-android
         exclude group: "org.jetbrains.kotlinx", module: "kotlinx-coroutines-debug"
     }
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
 
     // Instrumented unit test
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"

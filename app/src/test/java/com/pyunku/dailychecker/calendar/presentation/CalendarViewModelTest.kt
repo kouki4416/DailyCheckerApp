@@ -5,9 +5,11 @@ import com.pyunku.dailychecker.common.data.UserPreferencesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito.mock
 
 @ExperimentalCoroutinesApi
 class CalendarViewModelTest {
@@ -19,18 +21,21 @@ class CalendarViewModelTest {
     lateinit var userPreferencesRepository: UserPreferencesRepository
 
     @Before
-    fun setUpViewModel() {
+    fun setUp() {
+        // Initialize mockito
+        userPreferencesRepository = mock(UserPreferencesRepository::class.java)
         val offlineFirstCheckedDateRepository = OfflineFirstCheckedDateRepository(
             FakeCheckedDateDataSource()
         )
         viewModel = CalendarViewModel(
             offlineFirstCheckedDateRepository,
-            userPreferencesRepository
+            userPreferencesRepository,
+
         )
     }
 
     @Test
-    fun initialState_CalendarScreenState_Default() {
+    fun initialState_CalendarScreenState_Default() = scope.runTest {
         val initialState = viewModel.state.value
         assert(
             initialState == CalendarScreenState(

@@ -55,6 +55,14 @@ fun CalendarRoute(
 ) {
     val state by viewModel.state.collectAsState()
     val userPreferences by viewModel.userPreferencesState.collectAsState()
+
+    if(state.isLoading){
+        LaunchedEffect(Unit){
+            viewModel.getCheckedDate()
+
+        }
+    }
+
     CalendarScreen(
         state = state,
         userPreferences,

@@ -3,7 +3,8 @@ package com.pyunku.dailychecker.common.data
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class UserPreferencesRepository @Inject constructor(
+// TODO changed to open class for mocking, fix if possible
+open class UserPreferencesRepository @Inject constructor(
     private val userPreferencesDataSource: UserPreferencesDataSource,
 ) {
     val userDataStream: Flow<UserPreferences> = userPreferencesDataSource.userPreferencesFlow

@@ -7,15 +7,13 @@ import com.pyunku.dailychecker.calendar.data.local.CheckedDate
 import com.pyunku.dailychecker.common.data.CheckShape
 import com.pyunku.dailychecker.common.data.UserPreferences
 import com.pyunku.dailychecker.common.data.UserPreferencesRepository
+import com.pyunku.dailychecker.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -24,6 +22,7 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     private val offlineFirstCheckedDateRepository: OfflineFirstCheckedDateRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
     private val _state = MutableStateFlow(
         CalendarScreenState(
@@ -49,12 +48,7 @@ class CalendarViewModel @Inject constructor(
         exception.printStackTrace()
     }
 
-
-    init {
-        getCheckedDate()
-    }
-
-    private fun getCheckedDate() {
+    fun getCheckedDate() {
         viewModelScope.launch(errorHandler) {
             offlineFirstCheckedDateRepository.getCheckedDates().collect {
                 _state.value = _state.value.copy(
@@ -75,7 +69,7 @@ class CalendarViewModel @Inject constructor(
             month = date.monthValue,
             day = date.dayOfMonth
         )
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(ioDispatcher).launch {
             offlineFirstCheckedDateRepository.deleteCheckedDate(checkedDate)
         }
     }
@@ -87,7 +81,7 @@ class CalendarViewModel @Inject constructor(
             month = date.monthValue,
             day = date.dayOfMonth
         )
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(ioDispatcher).launch {
             offlineFirstCheckedDateRepository.addCheckedDate(checkedDate)
         }
     }
