@@ -85,15 +85,28 @@ fun RowScope.AddItem(
 
 @Composable
 fun AdMobBar() {
-    AndroidView(
-        modifier = Modifier.fillMaxWidth(),
-        factory = {
-        AdView(it).apply {
-            setAdSize(AdSize.BANNER)
-            adUnitId = "ca-app-pub-7719172067804321/1743343072"
-            //Test
-            //adUnitId = "ca-app-pub-3940256099942544/6300978111"
-            loadAd(AdRequest.Builder().build())
-        }
-    })
+    if(BuildConfig.DEBUG){
+        AndroidView(
+            modifier = Modifier.fillMaxWidth(),
+            factory = {
+                AdView(it).apply {
+                    setAdSize(AdSize.BANNER)
+                    //Test
+                    adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                    loadAd(AdRequest.Builder().build())
+                }
+            })
+    } else{
+        AndroidView(
+            modifier = Modifier.fillMaxWidth(),
+            factory = {
+                AdView(it).apply {
+                    setAdSize(AdSize.BANNER)
+                    adUnitId = "ca-app-pub-7719172067804321/1743343072"
+                    //Test
+                    //adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                    loadAd(AdRequest.Builder().build())
+                }
+            })
+    }
 }
