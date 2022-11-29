@@ -165,4 +165,7 @@ dependencies {
 
     // Setting Compose
     implementation 'com.github.alorma:compose-settings-ui-m3:0.13.0'
+
+    // Glance
+    implementation "androidx.glance:glance-appwidget:$glance_version"
 }

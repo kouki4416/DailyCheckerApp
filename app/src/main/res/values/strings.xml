@@ -6,4 +6,6 @@
     <string name="setting_select_check_shape">チェックに使用するマークを選択</string>
     <string name="setting_check_shape">チェックマーク</string>
     <string name="dark_mode">ダークモード</string>
+    <string name="widget_description">Widget</string>
+    <string name="widget_initial_loading_label">ローディング中</string>
 </resources>
