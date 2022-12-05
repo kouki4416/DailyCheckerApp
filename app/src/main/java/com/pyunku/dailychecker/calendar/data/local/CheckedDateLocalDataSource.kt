@@ -22,4 +22,9 @@ class CheckedDateLocalDataSource @Inject constructor(
     override suspend fun addCheckedDate(date: CheckedDate) = withContext(ioDispatcher) {
         checkedDateDao.insert(date)
     }
+
+    override fun getCheckedState(checkedDate: CheckedDate): Boolean {
+        val resultList = checkedDateDao.find(checkedDate.dateString)
+        return resultList.isNotEmpty()
+    }
 }

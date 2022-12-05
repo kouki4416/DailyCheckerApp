@@ -16,4 +16,7 @@ interface CheckedDateDao{
 
     @Query("SELECT * FROM date")
     fun findAll(): Flow<List<CheckedDate>>
+
+    @Query("select * from date where dateString=:primaryKey")
+    fun find(primaryKey: String): List<CheckedDate>
 }

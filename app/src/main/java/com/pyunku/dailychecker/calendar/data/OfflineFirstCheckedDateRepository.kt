@@ -22,4 +22,9 @@ class OfflineFirstCheckedDateRepository @Inject constructor(
         checkedDateLocalDataSource.addCheckedDate(date)
     }
 
+    override fun getCheckedState(checkedDate: CheckedDate): Boolean {
+        return checkedDateLocalDataSource.getCheckedState(checkedDate)
+    }
+
+
 }

@@ -8,4 +8,6 @@ interface CheckedDateDataSource {
     suspend fun deleteCheckedDate(date: CheckedDate)
 
     suspend fun addCheckedDate(date: CheckedDate)
+
+    fun getCheckedState(checkedDate: CheckedDate): Boolean
 }
