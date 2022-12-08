@@ -8,6 +8,7 @@ import com.pyunku.dailychecker.common.data.CheckShape
 import com.pyunku.dailychecker.common.data.UserPreferences
 import com.pyunku.dailychecker.common.data.UserPreferencesRepository
 import com.pyunku.dailychecker.di.IoDispatcher
+import com.pyunku.dailychecker.domain.interactor.GlanceInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     private val offlineFirstCheckedDateRepository: OfflineFirstCheckedDateRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val glanceInteractor: GlanceInteractor,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
     private val _state = MutableStateFlow(
@@ -71,6 +73,7 @@ class CalendarViewModel @Inject constructor(
         )
         CoroutineScope(ioDispatcher).launch {
             offlineFirstCheckedDateRepository.deleteCheckedDate(checkedDate)
+            glanceInteractor.onCalendarUpdated()
         }
     }
 
@@ -83,6 +86,7 @@ class CalendarViewModel @Inject constructor(
         )
         CoroutineScope(ioDispatcher).launch {
             offlineFirstCheckedDateRepository.addCheckedDate(checkedDate)
+            glanceInteractor.onCalendarUpdated()
         }
     }
 

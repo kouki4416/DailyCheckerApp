@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class WidgetViewModel @Inject constructor(
     private val toggleCheckedDateUseCase: ToggleCheckedDateUseCase,
-    private val getCheckedDateUseCase: GetCheckedDateUseCase
+    private val getCheckedDateUseCase: GetCheckedDateUseCase,
 ){
     fun loadCheckedDate(): Flow<List<CheckedDate>> = getCheckedDateUseCase()
 

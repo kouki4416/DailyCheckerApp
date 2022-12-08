@@ -10,8 +10,10 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class WidgetReceiver : GlanceAppWidgetReceiver(){
+    @Inject lateinit var widget: Widget
+    @Inject lateinit var viewModel: WidgetViewModel
     override val glanceAppWidget: GlanceAppWidget
-        get() = Widget().apply { loadCalendar() }
+        get() = widget.apply { loadData() }
 
 
 

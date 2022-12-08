@@ -13,20 +13,28 @@ import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionStartActivity
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
+import androidx.glance.appwidget.updateAll
 import com.pyunku.dailychecker.calendar.data.local.CheckedDate
 import com.pyunku.dailychecker.calendar.presentation.MainActivity
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
-class Widget: GlanceAppWidget() {
-
-    @Inject lateinit var viewModel: WidgetViewModel
+class Widget @Inject constructor(
+    @ApplicationContext val context: Context,
+    val viewModel: WidgetViewModel,
+) : GlanceAppWidget() {
 
     private val coroutineScope = MainScope()
 
     private var calendar by mutableStateOf<List<CheckedDate>>(emptyList())
+
+    private var isTodayChecked by mutableStateOf<Boolean>(false)
 
     @Composable
     override fun Content() {
@@ -35,9 +43,9 @@ class Widget: GlanceAppWidget() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun CalendarWidget(){
+    fun CalendarWidget() {
         Button(
-            text = calendar.first().dateString,
+            text = isTodayChecked.toString(),
             onClick = actionStartActivity<MainActivity>()
 //            actionRunCallback<LogActionCallback>(
 //                parameters = actionParametersOf(
@@ -47,20 +55,34 @@ class Widget: GlanceAppWidget() {
         )
     }
 
-    fun loadCalendar(){
+    fun loadData() {
         coroutineScope.launch {
             calendar = viewModel.loadCheckedDate().first()
+            isTodayChecked = isTodayChecked(calendar)
+            updateAll(context)
         }
+    }
+
+    override suspend fun onDelete(context: Context, glanceId: GlanceId) {
+        super.onDelete(context, glanceId)
+        coroutineScope.cancel()
+    }
+
+    private fun isTodayChecked(list: List<CheckedDate>): Boolean {
+        return list.find {
+            val todayString = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            it.dateString == todayString
+        } != null
     }
 }
 
-class LogActionCallback : ActionCallback{
+class LogActionCallback : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
         parameters: ActionParameters,
     ) {
-        Log.d("test","Item with id $glanceId and params $parameters clicked.")
+        Log.d("test", "Item with id $glanceId and params $parameters clicked.")
     }
 
 }
