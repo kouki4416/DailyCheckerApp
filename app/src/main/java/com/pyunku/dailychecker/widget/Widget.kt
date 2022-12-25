@@ -13,10 +13,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.*
 import androidx.glance.action.ActionParameters
-import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
-import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.updateAll
 import androidx.glance.layout.*
@@ -82,7 +80,7 @@ class Widget @Inject constructor(
                     )
                 }
                 Row(modifier = GlanceModifier.fillMaxWidth()
-                    .clickable(actionRunCallback<ClickActionCallback>())
+//                    .clickable(actionRunCallback<ClickActionCallback>())
                 ) {
                     Text(
                         text = date.dayOfMonth.toString(),
