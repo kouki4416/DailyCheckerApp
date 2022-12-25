@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Daily\nChecker</string>
+    <string name="calendar">Calendar</string>
+    <string name="CheckedDate">checkedDate</string>
+    <string name="License">License</string>
+    <string name="setting_select_check_shape">Select check icon</string>
+    <string name="setting_check_shape">Check icon</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="widget_description">Widget</string>
+    <string name="widget_initial_loading_label">Loading</string>
+    <string name="title_example">e.g.) Go to gym</string>
+</resources>

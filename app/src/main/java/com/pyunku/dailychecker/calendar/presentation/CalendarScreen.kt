@@ -457,7 +457,7 @@ fun CheckedCounter(
                 maxLines = 1,
                 value = text,
                 placeholder = {
-                    Text(text ="例)ジムに行けた日")
+                    Text(text = stringResource(R.string.title_example))
                 },
                 leadingIcon = {
                     Image(
