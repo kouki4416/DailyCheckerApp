@@ -29,6 +29,10 @@ class FakeCheckedDateDao: CheckedDateDao {
         }
     }
 
+    override fun find(primaryKey: String): List<CheckedDate> {
+        TODO("Not yet implemented")
+    }
+
     private fun updateCheckedDate(
         checkedDate: CheckedDate
     ){

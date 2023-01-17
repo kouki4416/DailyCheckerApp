@@ -24,4 +24,8 @@ class FakeCheckedDateDataSource:CheckedDateDataSource {
     override suspend fun addCheckedDate(date: CheckedDate) {
         checkedDates[date.dateString] = date
     }
+
+    override fun getCheckedState(checkedDate: CheckedDate): Boolean {
+        TODO("Not yet implemented")
+    }
 }
