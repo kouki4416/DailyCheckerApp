@@ -2,6 +2,8 @@ package com.pyunku.dailychecker.calendar.presentation
 
 import com.pyunku.dailychecker.calendar.data.OfflineFirstCheckedDateRepository
 import com.pyunku.dailychecker.common.data.UserPreferencesRepository
+import com.pyunku.dailychecker.domain.interactor.GlanceInteractor
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
@@ -27,10 +29,12 @@ class CalendarViewModelTest {
         val offlineFirstCheckedDateRepository = OfflineFirstCheckedDateRepository(
             FakeCheckedDateDataSource()
         )
+
+        val glanceInteractor = mockk<GlanceInteractor>()
         viewModel = CalendarViewModel(
             offlineFirstCheckedDateRepository,
             userPreferencesRepository,
-
+            glanceInteractor
         )
     }
 
