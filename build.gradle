@@ -24,6 +24,7 @@ buildscript {
         room_version = '2.4.3'
         robolectric_version = '4.9'
         test_core_version = '1.5.0'
+        mockk_version = '1.13.3'
     }
 
     repositories {
@@ -33,7 +34,7 @@ buildscript {
 
     dependencies {
         classpath 'com.google.gms:google-services:4.3.14'
-        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.5'
+        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.6'
         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.44'
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
